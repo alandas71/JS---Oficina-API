@@ -24,6 +24,7 @@ function ValidateAgendamentoCreation(req: AgendamentoRequest, res: Response, nex
 
     const { Agendamento, Adicionais, Veiculo }: AgendamentoBody = req.body;
     const Fotos = req.files?.Fotos;
+    const Documentos = req.files?.Documentos;
 
     const errors: string[] = [];
 
@@ -145,6 +146,37 @@ function ValidateAgendamentoCreation(req: AgendamentoRequest, res: Response, nex
         }
       } else {
         const singleFile: any = Fotos;
+        if (singleFile) {
+          if (!allowedTypes.includes(singleFile.mimetype)) {
+            errors.push("Tipo de arquivo não permitido. Use apenas JPEG e PNG.");
+          }
+          if (singleFile.size > maxSize) {
+            errors.push("Tamanho máximo da foto é 2 MB.");
+          }
+        }
+      }
+    }
+
+    // Validação das Documentos
+    if (Documentos) {
+      const allowedTypes = ["image/jpeg", "image/png"];
+      const maxSize = 2 * 1024 * 1024; // 2 MB
+      const maxPhotos = 8;
+
+      if (Array.isArray(Documentos)) {
+        if (Documentos.length > maxPhotos) {
+          errors.push(`Você pode enviar no máximo ${maxPhotos} fotos.`);
+        }
+        for (const file of Documentos) {
+          if (!allowedTypes.includes(file.mimetype)) {
+            errors.push("Tipo de arquivo não permitido. Use apenas JPEG e PNG.");
+          }
+          if (file.size > maxSize) {
+            errors.push("Tamanho máximo da foto é 2 MB.");
+          }
+        }
+      } else {
+        const singleFile: any = Documentos;
         if (singleFile) {
           if (!allowedTypes.includes(singleFile.mimetype)) {
             errors.push("Tipo de arquivo não permitido. Use apenas JPEG e PNG.");
