@@ -3,25 +3,25 @@ import { Servico_Veiculo } from "../types/Models/ServicoVeiculoModel";
 
 class ServicoVeiculoRepository {
   async getServicoVeiculos(): Promise<Servico_Veiculo[]> {
-    return await db("Servico_Veiculo").select("*");
+    return await db.table("Servico_Veiculo").select("*");
   }
 
   async getServicoVeiculo(id: number): Promise<Servico_Veiculo | undefined> {
-    return await db("Servico_Veiculo").select("*").where("id", id).first();
+    return await db.table("Servico_Veiculo").select("*").where("id", id).first();
   }
 
   async createServicoVeiculo(data: Servico_Veiculo): Promise<Servico_Veiculo> {
-    const [id] = await db("Servico_Veiculo").insert(data);
+    const [id] = await db.table("Servico_Veiculo").insert(data);
     return await this.getServicoVeiculo(id);
   }
 
   async updateServicoVeiculo(data: Partial<Servico_Veiculo>, id: number): Promise<boolean> {
-    const updatedRows = await db("Servico_Veiculo").where("id", id).update(data);
+    const updatedRows = await db.table("Servico_Veiculo").where("id", id).update(data);
     return !!updatedRows;
   }  
 
   async deleteServicoVeiculo(id: number): Promise<boolean> {
-    const deletedRows = await db("Servico_Veiculo").where("id", id).del();
+    const deletedRows = await db.table("Servico_Veiculo").where("id", id).del();
     return !!deletedRows;
   }
 }

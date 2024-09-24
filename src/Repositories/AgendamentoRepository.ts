@@ -3,25 +3,25 @@ import { Agendamento } from "../types/Models/AgendamentoModel";
 
 class AgendamentoRepository {
   async getAgendamentos(): Promise<Agendamento[]> {
-    return await db("Agendamento").select("*");
+    return await db.table("Agendamento").select("*");
   }
 
   async getAgendamento(id: number): Promise<Agendamento | undefined> {
-    return await db("Agendamento").select("*").where("id", id).first();
+    return await db.table("Agendamento").select("*").where("id", id).first();
   }
 
   async createAgendamento(data: Agendamento): Promise<Agendamento> {
-    const [id] = await db("Agendamento").insert(data);
+    const [id] = await db.table("Agendamento").insert(data);
     return await this.getAgendamento(id);
   }
 
   async updateAgendamento(data: Partial<Agendamento>, id: number): Promise<boolean> {
-    const updatedRows = await db("Agendamento").where("id", id).update(data);
+    const updatedRows = await db.table("Agendamento").where("id", id).update(data);
     return !!updatedRows;
   }  
 
   async deleteAgendamento(id: number): Promise<boolean> {
-    const deletedRows = await db("Agendamento").where("id", id).del();
+    const deletedRows = await db.table("Agendamento").where("id", id).del();
     return !!deletedRows;
   }
 }

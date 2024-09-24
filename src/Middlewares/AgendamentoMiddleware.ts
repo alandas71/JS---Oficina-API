@@ -31,7 +31,13 @@ function ValidateAgendamentoCreation(req: AgendamentoRequest, res: Response, nex
     if (!Agendamento || typeof Agendamento !== 'object') {
       errors.push("Agendamento é obrigatório e deve ser um objeto.");
     } else {
-      const { Endereco_entrega, Observacao, Descricao, Oficina_id, Servico_id }: Agendamento = Agendamento;
+      const { Endereco_entrega, Observacao, Descricao, Oficina_id, Servico_id, Veiculo_id }: Agendamento = Agendamento;
+
+      if (!Veiculo_id) {
+        errors.push("Veiculo_id é obrigatório.");
+      } else if (typeof Veiculo_id !== "number") {
+        errors.push("Veiculo_id deve ser um number.");
+      }
 
       if (!Oficina_id) {
         errors.push("Oficina_id é obrigatório.");
