@@ -63,65 +63,66 @@ class AgendamentoController {
     let servicoVeiculo: Servico_Veiculo = null;
     let adicionais: Servico_Adicional[] = [];
 
-      try {
-          const newCliente: Cliente = await this.clienteRepository.createCliente(data.Cliente);
-          if (newCliente) data.Veiculo.Cliente_id = newCliente.id;
-          const newVeiculo: Veiculo = await this.veiculoRepository.createVeiculo(data.Veiculo)
-          if (newVeiculo) {
-            servicoVeiculo = await this.servicoVeiculoRepository.createServicoVeiculo({
-              Veiculo_id: newVeiculo.id,
-              Servico_id: data.Agendamento.Servico_id,
-              Situacao: "pendente"
-            }) 
-          }
-
-          const newAgendamento: Agendamento = await this.agendamentoRepository.createAgendamento(data.Agendamento);
-
-          if (!newVeiculo || !newAgendamento || !newCliente) {
-            res.status(500).json({ message: "Erro interno ao realizar agendamento." });
-            return;
-          }
-
-          adicionais = await Promise.all(
-              data.Adicionais.map((adicional: Servico_Adicional) => 
-                  this.agendamentoServicoAdicionalRepository.createAgendamentoServicoAdicional({
-                      Agendamento_id: newAgendamento.id,
-                      Servico_Adicional_id: adicional.id,
-                  })
-              )
-          );
-
-          if (req.files && Object.keys(req.files).length > 0) {
-              const uploadedImages: any = await uploadImagens(req.files.images);
-              
-              const images: string[] = uploadedImages.fileContents.filter((image: string, index: number) => index < 8); // Limite 8 imagens
-
-              fotos = await Promise.all(images.map(async (image: string) => {
-                  if (image) { 
-                      const dataImages: Veiculo_Fotos = {
-                          Veiculo_id: data.Veiculo.id,
-                          Foto_url: image
-                      };
-                      return await this.veiculoFotosRepository.createVeiculoFotos(dataImages);
-                  }
-                  return null;
-              }));
-
-              fotos = fotos.filter(foto => foto !== null) as Veiculo_Fotos[];
-          }
-
-          const responseData: AgendamentoBody = {
-              Veiculo: newVeiculo,
-              Cliente: newCliente,
-              Agendamento: newAgendamento,
-              Fotos: fotos,
-              Adicionais: adicionais,
-          };
-          
-          res.status(201).json(responseData);
-      } catch (error) {
-          res.status(500).json({ message: "Erro interno no servidor." });
+    try {
+      const newCliente: Cliente = await this.clienteRepository.createCliente(data.Cliente);
+      if (newCliente) data.Veiculo.Cliente_id = newCliente.id;
+      const newVeiculo: Veiculo = await this.veiculoRepository.createVeiculo(data.Veiculo)
+      if (newVeiculo) {
+        data.Agendamento.Veiculo_id = newVeiculo.id;
+        servicoVeiculo = await this.servicoVeiculoRepository.createServicoVeiculo({
+          Veiculo_id: newVeiculo.id,
+          Servico_id: data.Agendamento.Servico_id,
+          Situacao: "pendente"
+        }) 
       }
+
+      const newAgendamento: Agendamento = await this.agendamentoRepository.createAgendamento(data.Agendamento);
+
+      if (!newVeiculo || !newAgendamento || !newCliente) {
+        res.status(500).json({ message: "Erro interno ao realizar agendamento." });
+        return;
+      }
+
+      adicionais = await Promise.all(
+          data.Adicionais.map((adicional: Servico_Adicional) => 
+              this.agendamentoServicoAdicionalRepository.createAgendamentoServicoAdicional({
+                  Agendamento_id: newAgendamento.id,
+                  Servico_Adicional_id: adicional.id,
+              })
+          )
+      );
+
+      if (req.files && Object.keys(req.files).length > 0) {
+          const uploadedImages: any = await uploadImagens(req.files.Fotos);
+          const images: string[] = uploadedImages.fileContents.filter((image: string, index: number) => index < 8); // Limite 8 imagens
+          
+          fotos = await Promise.all(images.map(async (image: string) => {
+              if (image) { 
+                  const dataImages: Veiculo_Fotos = {
+                      Veiculo_id: newVeiculo.id,
+                      Foto_url: image
+                  };
+                  return await this.veiculoFotosRepository.createVeiculoFotos(dataImages);
+              }
+              return null;
+          }));
+
+          fotos = fotos.filter(foto => foto !== null) as Veiculo_Fotos[];
+      }
+
+      const responseData: AgendamentoBody = {
+          Veiculo: newVeiculo,
+          Cliente: newCliente,
+          Agendamento: newAgendamento,
+          Fotos: fotos,
+          Adicionais: adicionais,
+      };
+      
+      res.status(201).json(responseData);
+    } catch (error) {
+      console.log(error);
+      res.status(500).json({ message: "Erro interno no servidor." });
+    }
   }
 
   async updateAgendamento(req: Request, res: Response): Promise<void> {

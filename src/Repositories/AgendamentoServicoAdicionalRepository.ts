@@ -19,8 +19,8 @@ class AgendamentoServicoAdicionalRepository {
   }
 
   async createAgendamentoServicoAdicional(data: Agendamento_Servico_Adicional): Promise<Servico_Adicional> {
-    const [Servico_Adicional_id] = await db.table("Agendamento_Servico_Adicional").insert(data);
-    return await this.servicoAdicionalRepository.getServicoAdicional(Servico_Adicional_id);
+    const result = await db.table("Agendamento_Servico_Adicional").insert(data).returning('*');
+    return await this.servicoAdicionalRepository.getServicoAdicional(result[0].Servico_Adicional_id);
   }
 
   async updateAgendamentoServicoAdicional(data: Partial<Agendamento_Servico_Adicional>, id: number): Promise<boolean> {

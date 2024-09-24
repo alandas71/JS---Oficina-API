@@ -11,8 +11,8 @@ class VeiculoFotosRepository {
   }
 
   async createVeiculoFotos(data: Veiculo_Fotos): Promise<Veiculo_Fotos> {
-    const [id] = await db.table("Veiculo_Fotos").insert(data);
-    return await this.getVeiculoFotos(id);
+    const result = await db.table("Veiculo_Fotos").insert(data).returning('*');
+    return result[0];
   }
 
   async updateVeiculoFotos(data: Partial<Veiculo_Fotos>, id: number): Promise<boolean> {

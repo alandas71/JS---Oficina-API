@@ -11,8 +11,8 @@ class ServicoRepository {
   }
 
   async createServico(data: Servico): Promise<Servico> {
-    const [id] = await db.table("Servico").insert(data);
-    return await this.getServico(id);
+    const result = await db.table("Servico").insert(data).returning('*');
+    return result[0];
   }
 
   async updateServico(data: Partial<Servico>, id: number): Promise<boolean> {

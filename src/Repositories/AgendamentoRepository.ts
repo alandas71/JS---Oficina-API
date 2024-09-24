@@ -11,8 +11,8 @@ class AgendamentoRepository {
   }
 
   async createAgendamento(data: Agendamento): Promise<Agendamento> {
-    const [id] = await db.table("Agendamento").insert(data);
-    return await this.getAgendamento(id);
+    const result  = await db.table("Agendamento").insert(data).returning('*');
+    return result[0];
   }
 
   async updateAgendamento(data: Partial<Agendamento>, id: number): Promise<boolean> {

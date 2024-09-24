@@ -90,7 +90,9 @@ function ValidateVeiculoCreation(req: CustomRequest, res: Response, next: NextFu
         errors.push("Quilometragem deve ser um número.");
       }  
       
-      if (Caracteristicas && Caracteristicas !== "string") {
+      if (!Caracteristicas) {
+        errors.push("Quilometragem é obrigatório.");
+      } else if (typeof Caracteristicas !== "string") {
         errors.push("Caracteristicas deve ser uma string.");
       }
     }      

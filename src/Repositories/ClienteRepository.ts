@@ -11,8 +11,8 @@ class ClienteRepository {
   }
 
   async createCliente(data: Cliente): Promise<Cliente> {
-    const [id] = await db.table("Cliente").insert(data);
-    return await this.getCliente(id);
+    const result = await db.table("Cliente").insert(data).returning('*');
+    return result[0];
   }
 
   async updateCliente(data: Partial<Cliente>, id: number): Promise<boolean> {

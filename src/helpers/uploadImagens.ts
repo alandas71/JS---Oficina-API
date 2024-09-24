@@ -21,6 +21,7 @@ const uploadImagens = async (files: File[]): Promise<UploadResponse> => {
       originalFile = [...originalFile, file.originalFilename];
     }
   } catch (error) {
+    console.log(error)
     return { message: "Erro no upload do arquivo", status: 400 };
   }
   return { status: 200, fileContents, originalFile };
