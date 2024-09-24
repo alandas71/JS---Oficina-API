@@ -1,12 +1,23 @@
 import AgendamentoRepository from "../Repositories/AgendamentoRepository";
 import { Agendamento } from "Models/AgendamentoModel";
 import { Request, Response } from "express";
+import { AgendamentoRequest } from "Interfaces/AgendamentoRequest";
+import { AgendamentoBody } from "Interfaces/AgendamentoBody";
+import { Servico_Adicional } from "Models/ServicoAdicionalModel";
+import AgendamentoServicoAdicionalRepository from "../Repositories/AgendamentoServicoAdicionalRepository";
+import { Veiculo_Fotos } from "Models/VeiculoFotosModel";
+import VeiculoFotosRepository from "../Repositories/VeiculoFotosRepository";
+import uploadImagens from "../helpers/uploadImagens";
 
 class AgendamentoController {
   private agendamentoRepository: AgendamentoRepository;
+  private agendamentoServicoAdicionalRepository: AgendamentoServicoAdicionalRepository;
+  private veiculoFotosRepository: VeiculoFotosRepository;
 
   constructor() {
     this.agendamentoRepository = new AgendamentoRepository();
+    this.veiculoFotosRepository = new VeiculoFotosRepository();
+    this.agendamentoServicoAdicionalRepository = new AgendamentoServicoAdicionalRepository();
   }
 
   async getAgendamentos(req: Request, res: Response): Promise<void> {
@@ -34,14 +45,52 @@ class AgendamentoController {
     }
   }
 
-  async createAgendamento(req: Request, res: Response): Promise<void> {
-    const data: Agendamento = req.body;
-    try {
-      const newAgendamento: Agendamento = await this.agendamentoRepository.createAgendamento(data);
-      res.status(201).json(newAgendamento);
-    } catch (error) {
-      res.status(500).json({ message: "Erro interno no servidor." });
-    }
+  async createAgendamento(req: AgendamentoRequest, res: Response): Promise<void> {
+    const data: AgendamentoBody = req.body;
+    let fotos: Veiculo_Fotos[] = [];
+    let adicionais: Servico_Adicional[] = [];
+
+      try {
+          const newAgendamento: Agendamento = await this.agendamentoRepository.createAgendamento(data.Agendamento);
+          
+          adicionais = await Promise.all(
+              data.Adicionais.map((adicional: Servico_Adicional) => 
+                  this.agendamentoServicoAdicionalRepository.createAgendamentoServicoAdicional({
+                      Agendamento_id: newAgendamento.id,
+                      Servico_Adicional_id: adicional.id,
+                  })
+              )
+          );
+
+          if (req.files && Object.keys(req.files).length > 0) {
+              const uploadedImages: any = await uploadImagens(req.files.images);
+              
+              const images: string[] = uploadedImages.fileContents.filter((image: string, index: number) => index < 8); // Limite 8 imagens
+
+              fotos = await Promise.all(images.map(async (image: string) => {
+                  if (image) { 
+                      const dataImages: Veiculo_Fotos = {
+                          Veiculo_id: data.Agendamento.Servico_id,
+                          Foto_url: image
+                      };
+                      return await this.veiculoFotosRepository.createVeiculoFotos(dataImages);
+                  }
+                  return null;
+              }));
+
+              fotos = fotos.filter(foto => foto !== null) as Veiculo_Fotos[];
+          }
+
+          const responseData: AgendamentoBody = {
+              Agendamento: newAgendamento,
+              Fotos: fotos,
+              Adicionais: adicionais,
+          };
+          
+          res.status(201).json(responseData);
+      } catch (error) {
+          res.status(500).json({ message: "Erro interno no servidor." });
+      }
   }
 
   async updateAgendamento(req: Request, res: Response): Promise<void> {
