@@ -5,6 +5,6 @@ export interface Cliente {
   Email: string;
   Telefone: number;
   Situacao: "ativo" | "inativo";
-  Criado_em: Date;
-  Atualizado_em: Date;
+  Criado_em?: Date;
+  Atualizado_em?: Date;
 }

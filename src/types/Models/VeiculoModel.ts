@@ -14,6 +14,6 @@ export interface Veiculo {
   Cor: string;
   Chassi: string;
   Quilometragem: number;
-  Criado_em: Date;
-  Atualizado_em: Date;
+  Criado_em?: Date;
+  Atualizado_em?: Date;
 }

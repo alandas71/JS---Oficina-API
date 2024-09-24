@@ -6,6 +6,6 @@ export interface Servico_Veiculo {
   Servico_id: number;
   Fotos?: Servico_Fotos[];
   Situacao: "pendente" | "em andamento" | "finalizado";
-  Criado_em: Date;
-  Atualizado_em: Date;
+  Criado_em?: Date;
+  Atualizado_em?: Date;
 }

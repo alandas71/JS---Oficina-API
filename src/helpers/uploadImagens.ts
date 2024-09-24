@@ -1,10 +1,12 @@
 import fs from "fs";
 import { s3 } from "../services/s3BackBlaze";
 import { S3 } from "aws-sdk";
+import { File } from "Interfaces/FileInterface";
+import { UploadResponse } from "Interfaces/UploadResponseInterface";
 
-const uploadImagens = async (files: any) => {
-  let fileContents: any[] = [];
-  let originalFile: any[] = [];
+const uploadImagens = async (files: File[]): Promise<UploadResponse> => {
+  let fileContents: string[] = [];
+  let originalFile: string[] = [];
   try {
     for (const file of files) {
       let newFilename = `${Date.now().toString()}-${file.newFilename}`;

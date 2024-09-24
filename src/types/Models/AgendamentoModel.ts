@@ -1,4 +1,4 @@
-import { Servico, Servico_Adicional } from "./ServicoModel";
+import { Servico, Servico_Adicional } from "./ServicosModel";
 
 export interface Agendamento {
   id?: number;
@@ -10,6 +10,6 @@ export interface Agendamento {
   Descricao: string;
   Endereco_entrega: string;
   Observacao: string;
-  Criado_em: Date;
-  Atualizado_em: Date;
+  Criado_em?: Date;
+  Atualizado_em?: Date;
 }
