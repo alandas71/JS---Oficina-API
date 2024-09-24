@@ -1,22 +1,34 @@
 import AgendamentoRepository from "../Repositories/AgendamentoRepository";
 import { Agendamento } from "Models/AgendamentoModel";
 import { Request, Response } from "express";
+import AgendamentoServicoAdicionalRepository from "../Repositories/AgendamentoServicoAdicionalRepository";
+import ClienteRepository from "../Repositories/ClienteRepository";
+import VeiculoRepository from "../Repositories/VeiculoRepository";
+import VeiculoFotosRepository from "../Repositories/VeiculoFotosRepository";
+import ServicoVeiculoRepository from "../Repositories/ServicoVeiculoRepository";
 import { AgendamentoRequest } from "Interfaces/AgendamentoRequest";
 import { AgendamentoBody } from "Interfaces/AgendamentoBody";
 import { Servico_Adicional } from "Models/ServicoAdicionalModel";
-import AgendamentoServicoAdicionalRepository from "../Repositories/AgendamentoServicoAdicionalRepository";
 import { Veiculo_Fotos } from "Models/VeiculoFotosModel";
-import VeiculoFotosRepository from "../Repositories/VeiculoFotosRepository";
+import { Veiculo } from "Models/VeiculoModel";
+import { Cliente } from "Models/ClienteModel";
 import uploadImagens from "../helpers/uploadImagens";
+import { Servico_Veiculo } from "Models/ServicoVeiculoModel";
 
 class AgendamentoController {
   private agendamentoRepository: AgendamentoRepository;
+  private clienteRepository: ClienteRepository;
   private agendamentoServicoAdicionalRepository: AgendamentoServicoAdicionalRepository;
+  private veiculoRepository: VeiculoRepository;
   private veiculoFotosRepository: VeiculoFotosRepository;
+  private servicoVeiculoRepository: ServicoVeiculoRepository;
 
   constructor() {
     this.agendamentoRepository = new AgendamentoRepository();
+    this.clienteRepository = new ClienteRepository();
+    this.veiculoRepository = new VeiculoRepository();
     this.veiculoFotosRepository = new VeiculoFotosRepository();
+    this.servicoVeiculoRepository = new ServicoVeiculoRepository();
     this.agendamentoServicoAdicionalRepository = new AgendamentoServicoAdicionalRepository();
   }
 
@@ -46,13 +58,30 @@ class AgendamentoController {
   }
 
   async createAgendamento(req: AgendamentoRequest, res: Response): Promise<void> {
-    const data: AgendamentoBody = req.body;
+    let data: AgendamentoBody = req.body;
     let fotos: Veiculo_Fotos[] = [];
+    let servicoVeiculo: Servico_Veiculo = null;
     let adicionais: Servico_Adicional[] = [];
 
       try {
+          const newCliente: Cliente = await this.clienteRepository.createCliente(data.Cliente);
+          if (newCliente) data.Veiculo.Cliente_id = newCliente.id;
+          const newVeiculo: Veiculo = await this.veiculoRepository.createVeiculo(data.Veiculo)
+          if (newVeiculo) {
+            servicoVeiculo = await this.servicoVeiculoRepository.createServicoVeiculo({
+              Veiculo_id: newVeiculo.id,
+              Servico_id: data.Agendamento.Servico_id,
+              Situacao: "pendente"
+            }) 
+          }
+
           const newAgendamento: Agendamento = await this.agendamentoRepository.createAgendamento(data.Agendamento);
-          
+
+          if (!newVeiculo || !newAgendamento || !newCliente) {
+            res.status(500).json({ message: "Erro interno ao realizar agendamento." });
+            return;
+          }
+
           adicionais = await Promise.all(
               data.Adicionais.map((adicional: Servico_Adicional) => 
                   this.agendamentoServicoAdicionalRepository.createAgendamentoServicoAdicional({
@@ -70,7 +99,7 @@ class AgendamentoController {
               fotos = await Promise.all(images.map(async (image: string) => {
                   if (image) { 
                       const dataImages: Veiculo_Fotos = {
-                          Veiculo_id: data.Agendamento.Servico_id,
+                          Veiculo_id: data.Veiculo.id,
                           Foto_url: image
                       };
                       return await this.veiculoFotosRepository.createVeiculoFotos(dataImages);
@@ -82,6 +111,8 @@ class AgendamentoController {
           }
 
           const responseData: AgendamentoBody = {
+              Veiculo: newVeiculo,
+              Cliente: newCliente,
               Agendamento: newAgendamento,
               Fotos: fotos,
               Adicionais: adicionais,
