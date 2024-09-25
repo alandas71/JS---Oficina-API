@@ -1,18 +1,19 @@
 import { Response, NextFunction } from "express";
 import { IncomingForm } from "formidable";
 import { Agendamento } from "../types/Models/AgendamentoModel";
-import { AgendamentoRequest } from "Interfaces/AgendamentoCreateRequest";
+import { AgendamentoCreateRequest } from "Interfaces/AgendamentoCreateRequest";
 import { AgendamentoBody } from "Interfaces/AgendamentoBody";
 import { Veiculo } from "../types/Models/VeiculoModel";
+import { Cliente } from "../types/Models/ClienteModel";
 
-function ValidateAgendamentoCreation(req: AgendamentoRequest, res: Response, next: NextFunction) {
+function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Response, next: NextFunction) {
   const form = new IncomingForm({ keepExtensions: true });
   form.parse(req, async (err, fields, files) => {
     if (err) {
       return next(err);
     }
 
-    const body: AgendamentoRequest['body'] = {
+    const body: AgendamentoCreateRequest['body'] = {
       Agendamento: fields.Agendamento ? JSON.parse(fields.Agendamento[0]) : {},
       Veiculo: fields.Veiculo ? JSON.parse(fields.Veiculo[0]) : {},
       Cliente: fields.Cliente ? JSON.parse(fields.Cliente[0]) : {},
@@ -22,11 +23,45 @@ function ValidateAgendamentoCreation(req: AgendamentoRequest, res: Response, nex
     req.body = body;
     req.files = files;
 
-    const { Agendamento, Adicionais, Veiculo }: AgendamentoBody = req.body;
+    const { Agendamento, Adicionais, Veiculo, Cliente }: AgendamentoBody = req.body;
     const Fotos = req.files?.Fotos;
     const Documentos = req.files?.Documentos;
 
     const errors: string[] = [];
+
+    if (!Cliente || typeof Cliente !== 'object') {
+      errors.push("Cliente é obrigatório e deve ser um objeto.");
+    } else {
+      const { Nome, CPF, Telefone, Email }: Cliente = Cliente;
+      if (!Nome) {
+        errors.push("Nome é obrigatório.");
+      } else if (typeof Nome !== "string") {
+        errors.push("O Nome deve ser uma string.");
+      }
+
+      if (!Telefone) {
+        errors.push("Telefone é obrigatório.");
+      } else if (typeof Telefone !== "string") {
+        errors.push("O Telefone deve ser uma string.");
+      }
+
+      if (!Email) {
+        errors.push("Email é obrigatório.");
+      } else if (typeof Email !== "string") {
+        errors.push("O Email deve ser uma string.");
+      }
+
+      const emailRegex = /^[\w-\.]+@([\w-]+\.)+[\w-]{2,4}$/g;
+      if (!emailRegex.test(Email)) {
+        errors.push("O email deve ser válido.");
+      }
+
+      if (!CPF) {
+        errors.push("CPF é obrigatório.");
+      } else if (typeof CPF !== "string") {
+        errors.push("O CPF deve ser uma string.");
+      }
+    }
 
     // Validação de campos do Agendamento
     if (!Agendamento || typeof Agendamento !== 'object') {
