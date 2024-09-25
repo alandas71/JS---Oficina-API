@@ -44,7 +44,7 @@ class AgendamentoController {
   async getAgendamento(req: Request, res: Response): Promise<void> {
     try {
       const id: number = Number(req.params.id);
-      const agendamento: Agendamento | undefined = await this.agendamentoRepository.getAgendamento(id);
+      const agendamento: AgendamentoBody | undefined = await this.agendamentoRepository.getAgendamento(id);
       
       if (!agendamento) {
         res.status(404).json({ message: "Agendamento não encontrado." });
