@@ -1,17 +1,15 @@
 import { Request } from "express";
 import { Files } from "formidable";
-import { Agendamento } from "../Models/AgendamentoModel";
-import { Servico_Adicional } from "../Models/ServicoAdicionalModel";
 import { Veiculo } from "Models/VeiculoModel";
 import { Cliente } from "Models/ClienteModel";
+import { Servico_Veiculo } from "Models/ServicoVeiculoModel";
 
-export interface AgendamentoRequest extends Request {
+export interface ServicoVeiculoCreateRequest extends Request {
     files: Files;
     body: {
-      Agendamento: Agendamento;
+      Servico_Veiculo: Servico_Veiculo;
       Veiculo: Veiculo;
       Cliente: Cliente;
-      Adicionais?: Servico_Adicional[];
       [key: string]: any;
     };
   }

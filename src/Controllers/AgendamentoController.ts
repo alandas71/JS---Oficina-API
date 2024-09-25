@@ -6,7 +6,7 @@ import ClienteRepository from "../Repositories/ClienteRepository";
 import VeiculoRepository from "../Repositories/VeiculoRepository";
 import VeiculoFotosRepository from "../Repositories/VeiculoFotosRepository";
 import ServicoVeiculoRepository from "../Repositories/ServicoVeiculoRepository";
-import { AgendamentoRequest } from "Interfaces/AgendamentoRequest";
+import { AgendamentoCreateRequest } from "Interfaces/AgendamentoCreateRequest";
 import { AgendamentoBody } from "Interfaces/AgendamentoBody";
 import { Resumo, Servico } from "Interfaces/agendamentoStatusType";
 import { Servico_Adicional } from "Models/ServicoAdicionalModel";
@@ -90,7 +90,7 @@ class AgendamentoController {
     }
   }
 
-  async createAgendamento(req: AgendamentoRequest, res: Response): Promise<void> {
+  async createAgendamento(req: AgendamentoCreateRequest, res: Response): Promise<void> {
     let data: AgendamentoBody = req.body;
     let fotos: Veiculo_Fotos[] = [];
     let servicoVeiculo: Servico_Veiculo = null;

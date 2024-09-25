@@ -1,7 +1,7 @@
 import { Response, NextFunction } from "express";
 import { IncomingForm } from "formidable";
 import { Agendamento } from "../types/Models/AgendamentoModel";
-import { AgendamentoRequest } from "Interfaces/AgendamentoRequest";
+import { AgendamentoRequest } from "Interfaces/AgendamentoCreateRequest";
 import { AgendamentoBody } from "Interfaces/AgendamentoBody";
 import { Veiculo } from "../types/Models/VeiculoModel";
 
