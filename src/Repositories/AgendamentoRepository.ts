@@ -5,15 +5,105 @@ import { Servico_Adicional } from "Models/ServicoAdicionalModel";
 import { AgendamentoBody } from "Interfaces/AgendamentoBody";
 import { Veiculo } from "Models/VeiculoModel";
 import { Cliente } from "Models/ClienteModel";
+import { Resumo, Servico } from "Interfaces/agendamentoStatusType";
 
 class AgendamentoRepository {
   async getAgendamentos(): Promise<Agendamento[]> {
     return await db.table("Agendamento").select("*");
   }
 
-  async getAgendamento(id: number): Promise<AgendamentoBody> {
-    const agendamento: Agendamento = await db.table("Agendamento").select("*").where("id", id).first();
+  async getClienteAgendamentos(cpf: number, placa: string): Promise<Agendamento[]> {
+    return await db.table("Agendamento").select("*").where({CPF: cpf, placa: placa});
+  }
   
+  async getAgendamentoResumo(id: number): Promise<{servico: Servico; resumo: Resumo;}> {
+      const agendamento = await db('Agendamento')
+      .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
+      .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
+      .select(
+        'Cliente.Nome',
+        'Cliente.CPF',
+        'Cliente.Email',
+        'Cliente.Telefone',
+        'Veiculo.Placa',
+        'Veiculo.Modelo',
+        'Veiculo.Cor',
+        'Veiculo.Chassi',
+        'Veiculo.Quilometragem',
+        'Agendamento.Descricao as Descricao',
+        'Agendamento.id',
+        'Agendamento.Criado_em',
+        'Agendamento.Endereco_entrega',
+        'Agendamento.Observacao'
+      )
+      .where('Agendamento.id', id)
+      .first();
+
+    if (!agendamento) {
+      return undefined;
+    }
+
+    const adicionais: Servico_Adicional[] = await db('Servico_Adicional')
+      .select('Servico_Adicional.Tipo')
+      .join('Agendamento_Servico_Adicional', 'Servico_Adicional.id', 'Agendamento_Servico_Adicional.Servico_Adicional_id')
+      .where('Agendamento_Servico_Adicional.Agendamento_id', agendamento.id);
+
+    return {
+    servico: {
+        Tipo: agendamento.Descricao,
+        Adicionais: adicionais.map((adicional: Servico_Adicional) => adicional.Tipo).join(', ')
+      },
+      resumo: {
+        Nome: agendamento.Nome,
+        CPF: agendamento.CPF,
+        Email: agendamento.Email,
+        Telefone: agendamento.Telefone,
+        Placa: agendamento.Placa,
+        Modelo: agendamento.Modelo,
+        Cor: agendamento.Cor,
+        Chassi: agendamento.Chassi,
+        Quilometragem: agendamento.Quilometragem,
+        Criado_em: agendamento.Criado_em,
+        Observacao: agendamento.Observacao,
+        Endereco_entrega: agendamento.Endereco_entrega
+      }
+    };
+  }
+  
+  async getAgendamentosStatus(cpf: number, placa: string): Promise<{ Nome: string; Placa: string; Modelo: string; Situacao: string; }[]> {
+    const agendamentos = await db('Agendamento')
+      .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
+      .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
+      .join('Servico_Veiculo', 'Veiculo.id', 'Servico_Veiculo.Veiculo_id')
+      .select(
+        'Servico_Veiculo.Situacao',
+        'Cliente.Nome',
+        'Veiculo.Placa',
+        'Veiculo.Modelo',
+        'Agendamento.id'
+      )
+      .where('Cliente.CPF', cpf)
+      .andWhere('Veiculo.Placa', placa);
+  
+    if (!agendamentos.length) {
+      return [];
+    }
+  
+    return agendamentos.map(agendamento => ({
+      Nome: agendamento.Nome,
+      Placa: agendamento.Placa,
+      Modelo: agendamento.Modelo,
+      Situacao: agendamento.Situacao
+    }));
+  }  
+  
+  async getAgendamento(id: number): Promise<AgendamentoBody> {
+    const agendamento: Agendamento = await db.table("Agendamento")
+        .select("Agendamento.*", "Servico.Tipo as Tipo_servico")
+        .where("id", id)
+        .leftJoin("Servico", "Agendamneto.Servico_id", "Servico.id")
+        .first();
+                                            
     if (!agendamento) {
       return undefined;
     }
@@ -56,6 +146,7 @@ class AgendamentoRepository {
         id: agendamento.id,
         Oficina_id: agendamento.Oficina_id,
         Servico_id: agendamento.Servico_id,
+        Tipo_servico: agendamento.Tipo_servico,
         Veiculo_id: agendamento.Veiculo_id,
         Descricao: agendamento.Descricao,
         Endereco_entrega: agendamento.Endereco_entrega,

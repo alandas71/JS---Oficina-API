@@ -8,6 +8,7 @@ import VeiculoFotosRepository from "../Repositories/VeiculoFotosRepository";
 import ServicoVeiculoRepository from "../Repositories/ServicoVeiculoRepository";
 import { AgendamentoRequest } from "Interfaces/AgendamentoRequest";
 import { AgendamentoBody } from "Interfaces/AgendamentoBody";
+import { Resumo, Servico } from "Interfaces/agendamentoStatusType";
 import { Servico_Adicional } from "Models/ServicoAdicionalModel";
 import { Veiculo_Fotos } from "Models/VeiculoFotosModel";
 import { Veiculo } from "Models/VeiculoModel";
@@ -41,10 +42,42 @@ class AgendamentoController {
     }
   }
 
+  async getAgendamentosStatus(req: Request, res: Response): Promise<void> {
+    try {
+      const { cpf, placa } = req.params;
+      const agendamentos: { Nome: string; Placa: string; Modelo: string; Situacao: string; }[] | [] = await this.agendamentoRepository.getAgendamentosStatus(Number(cpf), placa);
+      
+      if (!agendamentos) {
+        res.status(404).json({ message: "Agendamentos não encontrados." });
+        return;
+      }
+
+      res.status(200).json(agendamentos);
+    } catch (error) {
+      res.status(500).json({ message: "Erro interno no servidor." });
+    }
+  }
+
   async getAgendamento(req: Request, res: Response): Promise<void> {
     try {
       const id: number = Number(req.params.id);
       const agendamento: AgendamentoBody | undefined = await this.agendamentoRepository.getAgendamento(id);
+      
+      if (!agendamento) {
+        res.status(404).json({ message: "Agendamento não encontrado." });
+        return;
+      }
+
+      res.status(200).json(agendamento);
+    } catch (error) {
+      res.status(500).json({ message: "Erro interno no servidor." });
+    }
+  }
+
+  async getAgendamentoResumo(req: Request, res: Response): Promise<void> {
+    try {
+      const id: number = Number(req.params.id);
+      const agendamento: {servico: Servico; resumo: Resumo;} | undefined = await this.agendamentoRepository.getAgendamentoResumo(id);
       
       if (!agendamento) {
         res.status(404).json({ message: "Agendamento não encontrado." });
@@ -120,7 +153,6 @@ class AgendamentoController {
       
       res.status(201).json(responseData);
     } catch (error) {
-      console.log(error);
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }
