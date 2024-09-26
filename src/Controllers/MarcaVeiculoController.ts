@@ -3,9 +3,14 @@ import axios from "axios";
 
 class MarcaVeiculoController {
   private marcasBrasil: string[] = [
-    "Chevrolet", "Fiat", "Ford", "Volkswagen", "Renault", "Honda", 
-    "Toyota", "Hyundai", "Nissan", "Jeep", "Peugeot", "Citroën", 
-    "BMW", "Mercedes-Benz", "Audi", "Kia", "Mitsubishi"
+    "Chevrolet", "Fiat", "Ford", "Volkswagen", "Renault", "Honda",
+    "Toyota", "Hyundai", "Nissan", "Jeep", "Peugeot", "Citroën",
+    "BMW", "BYD", "Mercedes-Benz", "Audi", "Kia", "Mitsubishi",
+    "Volkswagen", "Chrysler", "Subaru", "Land Rover", "Mazda", 
+    "Dodge", "Land Rover", "Troller", "Foton", "Lifan", 
+    "JAC Motors", "Porsche", "Volvo", "Changan", "Great Wall",
+    "Ravon", "Nissan", "Smart", "SsangYong", "Fiorino",
+    "Chevrolet", "Honda", "Fiat", "Renault", "Caoa Chery"
   ];
 
   async getMarcasVeiculos(req: Request, res: Response): Promise<void> {
