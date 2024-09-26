@@ -41,8 +41,8 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!Telefone) {
         errors.push("Telefone é obrigatório.");
-      } else if (typeof Telefone !== "string") {
-        errors.push("O Telefone deve ser uma string.");
+      } else if (typeof Telefone !== "number") {
+        errors.push("O Telefone deve ser um number.");
       }
 
       if (!Email) {
@@ -58,8 +58,8 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!CPF) {
         errors.push("CPF é obrigatório.");
-      } else if (typeof CPF !== "string") {
-        errors.push("O CPF deve ser uma string.");
+      } else if (typeof CPF !== "number") {
+        errors.push("O CPF deve ser um number.");
       }
     }
 
@@ -164,7 +164,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
     // Validação das Fotos
     if (Fotos) {
       const allowedTypes = ["image/jpeg", "image/png"];
-      const maxSize = 2 * 1024 * 1024; // 2 MB
+      const maxSize = 20 * 1024 * 1024; // 20 MB
       const maxPhotos = 8;
 
       if (Array.isArray(Fotos)) {
@@ -195,7 +195,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
     // Validação das Documentos
     if (Documentos) {
       const allowedTypes = ["image/jpeg", "image/png"];
-      const maxSize = 2 * 1024 * 1024; // 2 MB
+      const maxSize = 20 * 1024 * 1024; // 20 MB
       const maxPhotos = 8;
 
       if (Array.isArray(Documentos)) {

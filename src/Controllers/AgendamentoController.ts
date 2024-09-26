@@ -97,7 +97,14 @@ class AgendamentoController {
     let adicionais: Servico_Adicional[] = [];
 
     try {
-      const newCliente: Cliente = await this.clienteRepository.createCliente(data.Cliente);
+      const newCliente: Cliente = await this.clienteRepository.createCliente({
+        Nome: data.Cliente.Nome,
+        CPF: data.Cliente.CPF,
+        Email: data.Cliente.Email,
+        Telefone: data.Cliente.Telefone,
+        Situacao: "ativo",
+
+      });
       if (newCliente) data.Veiculo.Cliente_id = newCliente.id;
       const newVeiculo: Veiculo = await this.veiculoRepository.createVeiculo(data.Veiculo)
       if (newVeiculo) {

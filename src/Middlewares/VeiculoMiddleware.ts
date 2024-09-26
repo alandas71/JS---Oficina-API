@@ -100,7 +100,7 @@ function ValidateVeiculoCreation(req: CustomRequest, res: Response, next: NextFu
     // Validação das Fotos
     if (Fotos) {
       const allowedTypes = ["image/jpeg", "image/png"];
-      const maxSize = 2 * 1024 * 1024; // 2 MB
+      const maxSize = 20 * 1024 * 1024; // 20 MB
       const maxPhotos = 8;
 
       if (Array.isArray(Fotos)) {
