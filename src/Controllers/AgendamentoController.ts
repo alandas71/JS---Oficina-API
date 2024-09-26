@@ -2,6 +2,7 @@ import AgendamentoRepository from "../Repositories/AgendamentoRepository";
 import { Agendamento } from "Models/AgendamentoModel";
 import { Request, Response } from "express";
 import AgendamentoServicoAdicionalRepository from "../Repositories/AgendamentoServicoAdicionalRepository";
+import MarcaVeiculoRepository from "../Repositories/MarcaVeiculoRepository";
 import ClienteRepository from "../Repositories/ClienteRepository";
 import VeiculoRepository from "../Repositories/VeiculoRepository";
 import VeiculoFotosRepository from "../Repositories/VeiculoFotosRepository";
@@ -23,6 +24,7 @@ class AgendamentoController {
   private veiculoRepository: VeiculoRepository;
   private veiculoFotosRepository: VeiculoFotosRepository;
   private servicoVeiculoRepository: ServicoVeiculoRepository;
+  private marcaVeiculoRepository: MarcaVeiculoRepository;
 
   constructor() {
     this.agendamentoRepository = new AgendamentoRepository();
@@ -31,6 +33,7 @@ class AgendamentoController {
     this.veiculoFotosRepository = new VeiculoFotosRepository();
     this.servicoVeiculoRepository = new ServicoVeiculoRepository();
     this.agendamentoServicoAdicionalRepository = new AgendamentoServicoAdicionalRepository();
+    this.marcaVeiculoRepository = new MarcaVeiculoRepository();
   }
 
   async getAgendamentos(req: Request, res: Response): Promise<void> {
@@ -92,11 +95,11 @@ class AgendamentoController {
 
   async createAgendamento(req: AgendamentoCreateRequest, res: Response): Promise<void> {
     let data: AgendamentoBody = req.body;
-    console.log(req.body)
+
     let fotos: Veiculo_Fotos[] = [];
     let servicoVeiculo: Servico_Veiculo = null;
     let adicionais: Servico_Adicional[] = [];
-
+    console.log(adicionais)
     try {
       const newCliente: Cliente = await this.clienteRepository.createCliente({
         Nome: data.Cliente.Nome,
@@ -107,7 +110,21 @@ class AgendamentoController {
 
       });
       if (newCliente) data.Veiculo.Cliente_id = newCliente.id;
-      const newVeiculo: Veiculo = await this.veiculoRepository.createVeiculo(data.Veiculo)
+      if (typeof +data.Veiculo.Marca === "number") {
+        const info = await this.marcaVeiculoRepository.getMarcaInfo(+data.Veiculo.Marca);
+        const modeloEncontrado = info.data.modelos.find((modelo: any) => modelo.codigo === +data.Veiculo.Modelo);
+        data.Veiculo.Modelo = modeloEncontrado.nome;
+      } 
+      const newVeiculo: Veiculo = await this.veiculoRepository.createVeiculo({
+        Placa: data.Veiculo.Placa,
+        Marca: data.Veiculo.Marca,
+        Modelo: data.Veiculo.Modelo,
+        Caracteristicas: data.Veiculo.Caracteristicas,
+        Ano_Modelo: data.Veiculo.Ano_Modelo,
+        Cor: data.Veiculo.Cor,
+        Chassi: data.Veiculo.Chassi,
+        Quilometragem: data.Veiculo.Quilometragem,
+      })
       if (newVeiculo) {
         data.Agendamento.Veiculo_id = newVeiculo.id;
         servicoVeiculo = await this.servicoVeiculoRepository.createServicoVeiculo({
@@ -161,6 +178,7 @@ class AgendamentoController {
       
       res.status(201).json(responseData);
     } catch (error) {
+      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }

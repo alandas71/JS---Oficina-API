@@ -12,6 +12,7 @@ exports.up = async function(knex) {
             Descricao NVARCHAR(255) NOT NULL,
             Endereco_entrega NVARCHAR(255) NOT NULL,
             Observacao NVARCHAR(255),
+            Data_Hora DATETIME,
             Criado_em DATETIME2 DEFAULT GETDATE(),
             Atualizado_em DATETIME2 DEFAULT GETDATE(),
             FOREIGN KEY (Servico_id) REFERENCES Servico(id)

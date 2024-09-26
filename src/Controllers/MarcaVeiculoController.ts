@@ -1,5 +1,5 @@
 import { Request, Response } from "express";
-import axios from "axios";
+import MarcaVeiculoRepository from "../Repositories/MarcaVeiculoRepository";
 
 class MarcaVeiculoController {
   private marcasBrasil: string[] = [
@@ -13,9 +13,15 @@ class MarcaVeiculoController {
     "Chevrolet", "Honda", "Fiat", "Renault", "Caoa Chery"
   ];
 
+  private marcaVeiculoRepository: MarcaVeiculoRepository;
+
+  constructor() {
+    this.marcaVeiculoRepository = new MarcaVeiculoRepository();
+  }
+
   async getMarcasVeiculos(req: Request, res: Response): Promise<void> {
     try {
-      const { data } = await axios.get(`${process.env.CARS_API_URL}carros/marcas`);
+      const { data } = await this.marcaVeiculoRepository.getMarcaVeiculos();
 
       const marcasNoBrasil = data.filter((marca: { nome: string }) => 
         this.marcasBrasil.includes(marca.nome)
@@ -30,7 +36,7 @@ class MarcaVeiculoController {
   async getMarcaInfo(req: Request, res: Response): Promise<void> {
     try {
       const id: number = Number(req.params.id);
-      const { data } = await axios.get(`${process.env.CARS_API_URL}carros/marcas/${id}/modelos`);
+      const { data } = await this.marcaVeiculoRepository.getMarcaInfo(id);
 
       if (!data) {
         res.status(404).json({ message: "Informação da marca não encontrada." });

@@ -26,7 +26,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
     req.body = body;
     req.files = files;
     const { Agendamento, Adicionais, Veiculo, Cliente }: AgendamentoBody = req.body;
-    console.log(body)
+    console.log(Adicionais)
     const Fotos = req.files?.Fotos;
     const Documentos = req.files?.Documentos;
 
@@ -44,7 +44,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!Telefone) {
         errors.push("Telefone é obrigatório.");
-      } else if (typeof Number(Telefone) !== "number") {
+      } else if (typeof +Telefone !== "number") {
         errors.push("O Telefone deve ser um number.");
       }
 
@@ -61,7 +61,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!CPF) {
         errors.push("CPF é obrigatório.");
-      } else if (typeof  Number(CPF) !== "number") {
+      } else if (typeof  +CPF !== "number") {
         errors.push("O CPF deve ser um number.");
       }
     }
@@ -74,13 +74,13 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!Oficina_id) {
         errors.push("Oficina_id é obrigatório.");
-      } else if (typeof Number(Oficina_id) !== "number") {
+      } else if (typeof +Oficina_id !== "number") {
         errors.push("Oficina_id deve ser um number.");
       }
 
       if (!Servico_id) {
         errors.push("Servico_id é obrigatório.");
-      } else if (typeof Number(Servico_id) !== "number") {
+      } else if (typeof +Servico_id !== "number") {
         errors.push("Servico_id deve ser um number.");
       }
 
@@ -124,14 +124,6 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
         errors.push("O modelo deve ser uma string.");
       }
       
-      if (!Ano_Modelo) {
-        errors.push("Ano_Modelo é obrigatório.");
-      } else if (typeof Number(Ano_Modelo) !== "number") {
-        errors.push("O Ano_Modelo deve ser um número.");
-      } else if (Ano_Modelo > new Date().getFullYear()) {
-        errors.push("O Ano_Modelo é inválido.");
-      }
-      
       if (!Cor) {
         errors.push("Cor é obrigatório.");
       } else if (typeof Cor !== 'string') {
@@ -148,15 +140,9 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
       
       if (!Quilometragem) {
         errors.push("Quilometragem é obrigatório.");
-      } else if (typeof Number(Quilometragem) !== 'number') {
+      } else if (typeof +Quilometragem !== 'number') {
         errors.push("Quilometragem deve ser um número.");
       }  
-      
-      if (!Caracteristicas) {
-        errors.push("Quilometragem é obrigatório.");
-      } else if (typeof Caracteristicas !== "string") {
-        errors.push("Caracteristicas deve ser uma string.");
-      }
     }      
 
     // Validação de Serviços Adicionais
