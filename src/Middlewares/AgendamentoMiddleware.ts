@@ -5,6 +5,7 @@ import { AgendamentoCreateRequest } from "Interfaces/AgendamentoCreateRequest";
 import { AgendamentoBody } from "Interfaces/AgendamentoBody";
 import { Veiculo } from "../types/Models/VeiculoModel";
 import { Cliente } from "../types/Models/ClienteModel";
+import { formatarFieldsAgendamento } from "../helpers/formatarFieldsAgendamento";
 
 function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Response, next: NextFunction) {
   const form = new IncomingForm({ keepExtensions: true });
@@ -13,17 +14,19 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
       return next(err);
     }
 
-    const body: AgendamentoCreateRequest['body'] = {
-      Agendamento: fields.Agendamento ? JSON.parse(fields.Agendamento[0]) : {},
-      Veiculo: fields.Veiculo ? JSON.parse(fields.Veiculo[0]) : {},
-      Cliente: fields.Cliente ? JSON.parse(fields.Cliente[0]) : {},
-      Adicionais: fields.Adicionais ? JSON.parse(fields.Adicionais[0]) : undefined,
+    const parsedFields = formatarFieldsAgendamento(fields);
+    
+    const body = {
+      Agendamento: parsedFields.Agendamento || {},
+      Veiculo: parsedFields.Veiculo || {},
+      Cliente: parsedFields.Cliente || {},
+      Adicionais: parsedFields.Adicionais || [],
     };
 
     req.body = body;
     req.files = files;
-
     const { Agendamento, Adicionais, Veiculo, Cliente }: AgendamentoBody = req.body;
+    console.log(body)
     const Fotos = req.files?.Fotos;
     const Documentos = req.files?.Documentos;
 
@@ -41,7 +44,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!Telefone) {
         errors.push("Telefone é obrigatório.");
-      } else if (typeof Telefone !== "number") {
+      } else if (typeof Number(Telefone) !== "number") {
         errors.push("O Telefone deve ser um number.");
       }
 
@@ -58,7 +61,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!CPF) {
         errors.push("CPF é obrigatório.");
-      } else if (typeof CPF !== "number") {
+      } else if (typeof  Number(CPF) !== "number") {
         errors.push("O CPF deve ser um number.");
       }
     }
@@ -71,13 +74,13 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
 
       if (!Oficina_id) {
         errors.push("Oficina_id é obrigatório.");
-      } else if (typeof Oficina_id !== "number") {
+      } else if (typeof Number(Oficina_id) !== "number") {
         errors.push("Oficina_id deve ser um number.");
       }
 
       if (!Servico_id) {
         errors.push("Servico_id é obrigatório.");
-      } else if (typeof Servico_id !== "number") {
+      } else if (typeof Number(Servico_id) !== "number") {
         errors.push("Servico_id deve ser um number.");
       }
 
@@ -123,7 +126,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
       
       if (!Ano_Modelo) {
         errors.push("Ano_Modelo é obrigatório.");
-      } else if (typeof Ano_Modelo !== "number") {
+      } else if (typeof Number(Ano_Modelo) !== "number") {
         errors.push("O Ano_Modelo deve ser um número.");
       } else if (Ano_Modelo > new Date().getFullYear()) {
         errors.push("O Ano_Modelo é inválido.");
@@ -145,7 +148,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
       
       if (!Quilometragem) {
         errors.push("Quilometragem é obrigatório.");
-      } else if (typeof Quilometragem !== 'number') {
+      } else if (typeof Number(Quilometragem) !== 'number') {
         errors.push("Quilometragem deve ser um número.");
       }  
       

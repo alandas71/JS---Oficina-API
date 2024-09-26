@@ -92,6 +92,7 @@ class AgendamentoController {
 
   async createAgendamento(req: AgendamentoCreateRequest, res: Response): Promise<void> {
     let data: AgendamentoBody = req.body;
+    console.log(req.body)
     let fotos: Veiculo_Fotos[] = [];
     let servicoVeiculo: Servico_Veiculo = null;
     let adicionais: Servico_Adicional[] = [];
