@@ -99,7 +99,7 @@ class AgendamentoController {
     let fotos: Veiculo_Fotos[] = [];
     let servicoVeiculo: Servico_Veiculo = null;
     let adicionais: Servico_Adicional[] = [];
-    console.log(adicionais)
+
     try {
       const newCliente: Cliente = await this.clienteRepository.createCliente({
         Nome: data.Cliente.Nome,
@@ -178,7 +178,6 @@ class AgendamentoController {
       
       res.status(201).json(responseData);
     } catch (error) {
-      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }

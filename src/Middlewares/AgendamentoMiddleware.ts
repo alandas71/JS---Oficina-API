@@ -26,7 +26,7 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
     req.body = body;
     req.files = files;
     const { Agendamento, Adicionais, Veiculo, Cliente }: AgendamentoBody = req.body;
-    console.log(Adicionais)
+
     const Fotos = req.files?.Fotos;
     const Documentos = req.files?.Documentos;
 
@@ -70,7 +70,11 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
     if (!Agendamento || typeof Agendamento !== 'object') {
       errors.push("Agendamento é obrigatório e deve ser um objeto.");
     } else {
-      const { Endereco_entrega, Observacao, Descricao, Oficina_id, Servico_id }: Agendamento = Agendamento;
+      const { Endereco_entrega, Observacao, Descricao, Oficina_id, Servico_id, Data_Hora }: Agendamento = Agendamento;
+
+      if (!Data_Hora) {
+        errors.push("Data_Hora é obrigatório.");
+      }
 
       if (!Oficina_id) {
         errors.push("Oficina_id é obrigatório.");
@@ -107,9 +111,9 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
       if (!Placa) {
         errors.push("Placa é obrigatória.");
       } else if (typeof Placa !== "string") {
-        errors.push("A placa deve ser uma string.");
-      } else if (!/^[A-Z]{3}-\d{4}$/i.test(Placa)) {
-        errors.push("A placa deve seguir o formato correto (ex: AAA-0A00 ou AAA-0000).");
+          errors.push("A placa deve ser uma string.");
+      } else if (!/^[A-Z]{3}\d[A-Z]\d{2}$/i.test(Placa.replace(/-/g, ''))) {
+          errors.push("A placa deve seguir o formato correto (ex: AAA0A00).");
       }
       
       if (!Marca) {
@@ -130,13 +134,13 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
         errors.push("A cor deve ser uma string.");
       }
       
-      if (!Chassi) {
-        errors.push("Chassi é obrigatório.");
-      } else if (typeof Chassi !== 'string') {
-        errors.push("Chassi deve ser uma string.");
-      } else if (Chassi.trim().length !== 17) {
-        errors.push("O número do chassi deve ter 17 caracteres.");
-      }
+      // if (!Chassi) {
+      //   errors.push("Chassi é obrigatório.");
+      // } else if (typeof Chassi !== 'string') {
+      //   errors.push("Chassi deve ser uma string.");
+      // } else if (Chassi.trim().length !== 17) {
+      //   errors.push("O número do chassi deve ter 17 caracteres.");
+      // }
       
       if (!Quilometragem) {
         errors.push("Quilometragem é obrigatório.");
