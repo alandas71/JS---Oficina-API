@@ -2,8 +2,11 @@ import { Router } from "express";
 
 import AgendamentoController from "../Controllers/AgendamentoController";
 import VeiculoController from "../Controllers/VeiculoController";
+import ServicoController from "../Controllers/ServicoController";
+import ServicoAdicionalController from "../Controllers/ServicoAdicionalController";
 import ServicoVeiculoController from "../Controllers/ServicoVeiculoController";
 import AvaliacaoClienteController from "../Controllers/AvaliacaoClienteController";
+import OficinaController from "../Controllers/OficinaController";
 
 import ValidateAgendamentoCreation from "../Middlewares/AgendamentoMiddleware";
 import ValidateServicoVeiculoCreation from "../Middlewares/ServicoVeiculoMiddleware";
@@ -13,6 +16,9 @@ import ValidateAvaliacaoClienteCreation from "../Middlewares/AvaliacaoClienteMid
 const avaliacaoClienteController = new AvaliacaoClienteController();
 const agendamentoController = new AgendamentoController();
 const veiculoController = new VeiculoController();
+const oficinaController = new OficinaController();
+const servicoController = new ServicoController();
+const servicoAdicionalController = new ServicoAdicionalController();
 const servicoVeiculoController = new ServicoVeiculoController();
 
 const router = Router();
@@ -25,6 +31,9 @@ router.post("/v1/agendamentos", ValidateAgendamentoCreation, agendamentoControll
 router.put("/v1/agendamentos/:id", agendamentoController.updateAgendamento.bind(agendamentoController)); // Atualizar um agendamento específico pelo ID
 router.delete("/v1/agendamentos/:id", agendamentoController.deleteAgendamento.bind(agendamentoController)); // Excluir um agendamento específico pelo ID
 
+router.get("/v1/oficina", oficinaController.getOficinas.bind(oficinaController)); // Listar todas as oficinas
+router.get("/v1/servico", servicoController.getServicos.bind(servicoController)); // Listar todos os serviços
+router.get("/v1/servico/adicional", servicoAdicionalController.getServicosAdicionais.bind(servicoAdicionalController)); // Listar todos os serviços adicionais
 router.post("/v1/servicos", ValidateServicoVeiculoCreation, servicoVeiculoController.createServicoVeiculo.bind(servicoVeiculoController)); // Criar um novo serviço veicular
 
 router.post("/v1/avaliacoes", ValidateAvaliacaoClienteCreation, avaliacaoClienteController.createAvaliacaoCliente.bind(avaliacaoClienteController)); // Avaliação feita pelo cliente
