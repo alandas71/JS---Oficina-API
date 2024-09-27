@@ -70,32 +70,40 @@ class AgendamentoRepository {
     };
   }
   
-  async getAgendamentosStatus(cpf: number, placa: string): Promise<{ Nome: string; Placa: string; Modelo: string; Situacao: string; }[]> {
-    const agendamentos = await db('Agendamento')
-      .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
-      .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
-      .join('Servico_Veiculo', 'Veiculo.id', 'Servico_Veiculo.Veiculo_id')
-      .select(
-        'Servico_Veiculo.Situacao',
-        'Cliente.Nome',
-        'Veiculo.Placa',
-        'Veiculo.Modelo',
-        'Agendamento.id'
-      )
-      .where('Cliente.CPF', cpf)
-      .andWhere('Veiculo.Placa', placa);
-  
-    if (!agendamentos.length) {
-      return [];
-    }
-  
-    return agendamentos.map(agendamento => ({
-      Nome: agendamento.Nome,
-      Placa: agendamento.Placa,
-      Modelo: agendamento.Modelo,
-      Situacao: agendamento.Situacao
-    }));
-  }  
+  async getAgendamentosStatus(cpf: number, placa: string, situacao: string): Promise<{ id: number; Nome: string; Placa: string; Modelo: string; Situacao: string; }[]> {
+      const query = db('Agendamento')
+          .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
+          .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
+          .join('Servico_Veiculo', 'Veiculo.id', 'Servico_Veiculo.Veiculo_id')
+          .select(
+              'Servico_Veiculo.Situacao',
+              'Cliente.Nome',
+              'Veiculo.Placa',
+              'Veiculo.Modelo',
+              'Agendamento.id'
+          )
+          .where('Cliente.CPF', cpf)
+          .andWhere('Veiculo.Placa', placa);
+    
+      if (situacao) {
+          query.andWhere('Servico_Veiculo.Situacao', situacao);
+      }
+
+      const agendamentos = await query;
+
+      if (!agendamentos.length) {
+          return [];
+      }
+
+      return agendamentos.map(agendamento => ({
+          id: agendamento.id,
+          Nome: agendamento.Nome,
+          Placa: agendamento.Placa,
+          Modelo: agendamento.Modelo,
+          Situacao: agendamento.Situacao
+      }));
+  }
+
   
   async getAgendamento(id: number): Promise<AgendamentoBody> {
     const agendamento: Agendamento = await db.table("Agendamento")
@@ -150,6 +158,7 @@ class AgendamentoRepository {
         Veiculo_id: agendamento.Veiculo_id,
         Descricao: agendamento.Descricao,
         Endereco_entrega: agendamento.Endereco_entrega,
+        Data_Hora: agendamento.Data_Hora,
         Observacao: agendamento.Observacao,
         Criado_em: agendamento.Criado_em,
         Atualizado_em: agendamento.Atualizado_em

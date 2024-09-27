@@ -48,7 +48,9 @@ class AgendamentoController {
   async getAgendamentosStatus(req: Request, res: Response): Promise<void> {
     try {
       const { cpf, placa } = req.params;
-      const agendamentos: { Nome: string; Placa: string; Modelo: string; Situacao: string; }[] | [] = await this.agendamentoRepository.getAgendamentosStatus(Number(cpf), placa);
+      const { situacao } = req.query;
+
+      const agendamentos: { id: number; Nome: string; Placa: string; Modelo: string; Situacao: string; }[] | [] = await this.agendamentoRepository.getAgendamentosStatus(Number(cpf), placa, situacao?.toString());
       
       if (!agendamentos) {
         res.status(404).json({ message: "Agendamentos não encontrados." });
