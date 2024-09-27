@@ -10,6 +10,7 @@ import { Resumo, Servico } from "Interfaces/agendamentoStatusType";
 class AgendamentoRepository {
   async getAgendamentos(): Promise<{
     id: number;
+    ServicoId: number;
     Nome: string;
     Tipo: string;
     Placa: string;
@@ -31,11 +32,13 @@ class AgendamentoRepository {
         'Veiculo.Placa',
         'Veiculo.Modelo',
         'Servico_Veiculo.Situacao',
+        'Servico_Veiculo.id as ServicoId',
         'Servico_Adicional.Tipo as ServicoAdicionalTipo'
       );
   
     const agendamentosMap = new Map<number, {
       id: number;
+      ServicoId: number;
       Nome: string;
       Tipo: string;
       Placa: string;
@@ -48,6 +51,7 @@ class AgendamentoRepository {
       if (!agendamentosMap.has(agendamento.id)) {
         agendamentosMap.set(agendamento.id, {
           id: agendamento.id,
+          ServicoId: agendamento.ServicoId,
           Nome: agendamento.Nome,
           Tipo: agendamento.Tipo,
           Placa: agendamento.Placa,

@@ -40,6 +40,8 @@ router.get("/v1/oficina", oficinaController.getOficinas.bind(oficinaController))
 router.get("/v1/oficina/:id", oficinaController.getOficina.bind(oficinaController)); // Listar uma oficina pelo ID
 
 router.post("/v1/servicos", ValidateServicoVeiculoCreation, servicoVeiculoController.createServicoVeiculo.bind(servicoVeiculoController)); // Criar um novo serviço veicular
+router.put("/v1/servicos/:id", servicoVeiculoController.updateUserServicoVeiculo.bind(servicoVeiculoController)); // Atualiza um serviço veicular pela situação
+
 router.get("/v1/servico", servicoController.getServicos.bind(servicoController)); // Listar todos os serviços
 
 router.get("/v1/servico/adicional", servicoAdicionalController.getServicosAdicionais.bind(servicoAdicionalController)); // Listar todos os serviços adicionais
