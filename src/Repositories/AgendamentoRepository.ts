@@ -8,8 +8,61 @@ import { Cliente } from "Models/ClienteModel";
 import { Resumo, Servico } from "Interfaces/agendamentoStatusType";
 
 class AgendamentoRepository {
-  async getAgendamentos(): Promise<Agendamento[]> {
-    return await db.table("Agendamento").select("*");
+  async getAgendamentos(): Promise<{
+    id: number;
+    Nome: string;
+    Tipo: string;
+    Placa: string;
+    Modelo: string;
+    Situacao: string;
+    ServicosAdicionais: string[];
+  }[]> { 
+    const agendamentos = await db('Agendamento')
+      .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
+      .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
+      .join('Servico_Veiculo', 'Veiculo.id', 'Servico_Veiculo.Veiculo_id')
+      .join('Servico', 'Servico.id', 'Servico_Veiculo.Servico_id')
+      .leftJoin('Agendamento_Servico_Adicional', 'Agendamento.id', 'Agendamento_Servico_Adicional.Agendamento_id')
+      .leftJoin('Servico_Adicional', 'Agendamento_Servico_Adicional.Servico_Adicional_id', 'Servico_Adicional.id')
+      .select(
+        'Agendamento.id',
+        'Cliente.Nome',
+        'Servico.Tipo',
+        'Veiculo.Placa',
+        'Veiculo.Modelo',
+        'Servico_Veiculo.Situacao',
+        'Servico_Adicional.Tipo as ServicoAdicionalTipo'
+      );
+  
+    const agendamentosMap = new Map<number, {
+      id: number;
+      Nome: string;
+      Tipo: string;
+      Placa: string;
+      Modelo: string;
+      Situacao: string;
+      ServicosAdicionais: string[];
+    }>();
+  
+    agendamentos.forEach(agendamento => {
+      if (!agendamentosMap.has(agendamento.id)) {
+        agendamentosMap.set(agendamento.id, {
+          id: agendamento.id,
+          Nome: agendamento.Nome,
+          Tipo: agendamento.Tipo,
+          Placa: agendamento.Placa,
+          Modelo: agendamento.Modelo,
+          Situacao: agendamento.Situacao,
+          ServicosAdicionais: []
+        });
+      }
+  
+      if (agendamento.ServicoAdicionalTipo) {
+        agendamentosMap.get(agendamento.id)?.ServicosAdicionais.push(agendamento.ServicoAdicionalTipo);
+      }
+    });
+  
+    return Array.from(agendamentosMap.values());
   }
 
   async getClienteAgendamentos(cpf: number, placa: string): Promise<Agendamento[]> {
