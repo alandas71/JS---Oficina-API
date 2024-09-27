@@ -126,9 +126,11 @@ class AgendamentoController {
         Cor: data.Veiculo.Cor,
         Chassi: data.Veiculo.Chassi,
         Quilometragem: data.Veiculo.Quilometragem,
+        Cliente_id: data.Veiculo.Cliente_id
       })
       if (newVeiculo) {
         data.Agendamento.Veiculo_id = newVeiculo.id;
+        data.Agendamento.Data_Hora = new Date(data.Agendamento.Data_Hora).toISOString();
         servicoVeiculo = await this.servicoVeiculoRepository.createServicoVeiculo({
           Veiculo_id: newVeiculo.id,
           Servico_id: data.Agendamento.Servico_id,
@@ -180,6 +182,7 @@ class AgendamentoController {
       
       res.status(201).json(responseData);
     } catch (error) {
+      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }

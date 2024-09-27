@@ -7,7 +7,7 @@ export interface Agendamento {
   Descricao: string;
   Endereco_entrega: string;
   Observacao: string;
-  Data_Hora: Date;
+  Data_Hora: Date | string;
   Criado_em?: Date;
   Atualizado_em?: Date;
 }

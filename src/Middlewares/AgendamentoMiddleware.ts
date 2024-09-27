@@ -112,8 +112,6 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
         errors.push("Placa é obrigatória.");
       } else if (typeof Placa !== "string") {
           errors.push("A placa deve ser uma string.");
-      } else if (!/^[A-Z]{3}\d[A-Z]\d{2}$/i.test(Placa.replace(/-/g, ''))) {
-          errors.push("A placa deve seguir o formato correto (ex: AAA0A00).");
       }
       
       if (!Marca) {
