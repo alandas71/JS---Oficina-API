@@ -8,6 +8,7 @@ import ServicoVeiculoController from "../Controllers/ServicoVeiculoController";
 import AvaliacaoClienteController from "../Controllers/AvaliacaoClienteController";
 import OficinaController from "../Controllers/OficinaController";
 import MarcaVeiculoController from "../Controllers/MarcaVeiculoController";
+import AuthController from "../Controllers/AuthController";
 
 import ValidateAgendamentoCreation from "../Middlewares/AgendamentoMiddleware";
 import ValidateServicoVeiculoCreation from "../Middlewares/ServicoVeiculoMiddleware";
@@ -16,6 +17,7 @@ import ValidateAvaliacaoClienteCreation from "../Middlewares/AvaliacaoClienteMid
 import ValidateAgendamentoServicoAdicionalCreation from "../Middlewares/AgendamentoServicoAdicionalMiddleware";
 import authenticateToken from "../Middlewares/AuthMiddleware";
 
+const authController = new AuthController();
 const avaliacaoClienteController = new AvaliacaoClienteController();
 const agendamentoController = new AgendamentoController();
 const veiculoController = new VeiculoController();
@@ -26,6 +28,8 @@ const servicoVeiculoController = new ServicoVeiculoController();
 const marcaVeiculoController = new MarcaVeiculoController();
 
 const router = Router();
+
+router.post("/v1/login", authController.Login.bind(authController));
 
 router.get("/v1/agendamentos", agendamentoController.getAgendamentos.bind(agendamentoController)); // Listar todos os agendamentos
 router.get("/v1/agendamentos/:id", agendamentoController.getAgendamento.bind(agendamentoController)); // Obter um agendamento específico pelo ID

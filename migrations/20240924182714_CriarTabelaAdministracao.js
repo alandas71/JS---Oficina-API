@@ -7,7 +7,7 @@ exports.up = async function(knex) {
         CREATE TABLE Administracao (
             id INT IDENTITY(1,1) PRIMARY KEY,
             Usuario NVARCHAR(255) NOT NULL,
-            Senha INT NOT NULL,
+            Senha VARCHAR(255) NOT NULL,
             Tipo NVARCHAR(255) NOT NULL CHECK (Tipo IN ('administrador', 'colaborador', 'mecanico')),
             Situacao NVARCHAR(10) NOT NULL CHECK (Situacao IN ('ativo', 'inativo')),
             Criado_em DATETIME2 DEFAULT GETDATE(),
