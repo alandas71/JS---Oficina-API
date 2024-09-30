@@ -13,6 +13,7 @@ import ValidateAgendamentoCreation from "../Middlewares/AgendamentoMiddleware";
 import ValidateServicoVeiculoCreation from "../Middlewares/ServicoVeiculoMiddleware";
 import ValidateVeiculoCreation from "../Middlewares/VeiculoMiddleware";
 import ValidateAvaliacaoClienteCreation from "../Middlewares/AvaliacaoClienteMiddleware";
+import ValidateAgendamentoServicoAdicionalCreation from "../Middlewares/AgendamentoServicoAdicionalMiddleware";
 
 const avaliacaoClienteController = new AvaliacaoClienteController();
 const agendamentoController = new AgendamentoController();
@@ -45,6 +46,7 @@ router.put("/v1/servicos/:id", servicoVeiculoController.updateUserServicoVeiculo
 router.get("/v1/servico", servicoController.getServicos.bind(servicoController)); // Listar todos os serviços
 
 router.get("/v1/servico/adicional", servicoAdicionalController.getServicosAdicionais.bind(servicoAdicionalController)); // Listar todos os serviços adicionais
+router.post("/v1/servico/adicional", ValidateAgendamentoServicoAdicionalCreation, servicoAdicionalController.createServicoAdicional.bind(servicoAdicionalController)); // Criar um novo serviço adicional
 
 router.post("/v1/avaliacoes", ValidateAvaliacaoClienteCreation, avaliacaoClienteController.createAvaliacaoCliente.bind(avaliacaoClienteController)); // Avaliação feita pelo cliente
 
