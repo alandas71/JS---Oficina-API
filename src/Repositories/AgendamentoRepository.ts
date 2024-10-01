@@ -227,6 +227,7 @@ class AgendamentoRepository {
         id: foto.id,
         Veiculo_id: foto.Veiculo_id,
         Foto_url: foto.Foto_url,
+        Situacao: foto.Situacao,
         Criado_em: foto.Criado_em,
         Atualizado_em: foto.Atualizado_em
       })),

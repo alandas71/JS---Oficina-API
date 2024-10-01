@@ -163,7 +163,8 @@ class AgendamentoController {
               if (image) { 
                   const dataImages: Veiculo_Fotos = {
                       Veiculo_id: newVeiculo.id,
-                      Foto_url: image
+                      Foto_url: image,
+                      Situacao: "checar"
                   };
                   return await this.veiculoFotosRepository.createVeiculoFotos(dataImages);
               }
