@@ -137,7 +137,8 @@ class AgendamentoRepository {
               'Cliente.Nome',
               'Veiculo.Placa',
               'Veiculo.Modelo',
-              'Agendamento.id'
+              'Agendamento.id',
+              'Agendamento.Servico_Situacao'
           )
           .where('Cliente.CPF', cpf)
           .andWhere('Veiculo.Placa', placa);
@@ -157,7 +158,8 @@ class AgendamentoRepository {
           Nome: agendamento.Nome,
           Placa: agendamento.Placa,
           Modelo: agendamento.Modelo,
-          Situacao: agendamento.Situacao
+          Situacao: agendamento.Situacao,
+          Servico_Situacao: agendamento.Servico_Situacao
       }));
   }
 
@@ -209,6 +211,7 @@ class AgendamentoRepository {
       },
       Agendamento: {
         id: agendamento.id,
+        Servico_Situacao: agendamento.Servico_Situacao,
         Oficina_id: agendamento.Oficina_id,
         Servico_id: agendamento.Servico_id,
         Tipo_servico: agendamento.Tipo_servico,

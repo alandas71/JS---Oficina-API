@@ -150,6 +150,7 @@ class AgendamentoController {
               this.agendamentoServicoAdicionalRepository.createAgendamentoServicoAdicional({
                   Agendamento_id: newAgendamento.id,
                   Servico_Adicional_id: adicional.id,
+                  Situacao: "fazendo"
               })
           )
       );

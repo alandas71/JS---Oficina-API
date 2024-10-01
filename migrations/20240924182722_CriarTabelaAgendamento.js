@@ -9,6 +9,7 @@ exports.up = async function(knex) {
             Oficina_id INT NOT NULL,
             Servico_id INT NOT NULL,
             Veiculo_id INT NOT NULL,
+            Servico_Situacao NVARCHAR(50),
             Descricao NVARCHAR(255) NOT NULL,
             Endereco_entrega NVARCHAR(255) NOT NULL,
             Observacao NVARCHAR(255),
