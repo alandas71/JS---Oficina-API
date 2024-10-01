@@ -1,4 +1,4 @@
-import { Response, NextFunction } from "express";
+import { Request, Response, NextFunction } from "express";
 import { IncomingForm } from "formidable";
 import { Agendamento } from "../types/Models/AgendamentoModel";
 import { AgendamentoCreateRequest } from "Interfaces/AgendamentoCreateRequest";
@@ -218,4 +218,63 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
   });
 }
 
-export default ValidateAgendamentoCreation;
+function ValidateAgendamentoUpdate(req: Request, res: Response, next: NextFunction) {
+  const { Agendamento, Adicionais, Veiculo, Cliente }: AgendamentoBody = req.body;
+  if (Veiculo || Cliente) {
+    res.status(422).json({ message: "Não é possível atualizar dados de veículo e cliente por essa rota." });
+    return;
+  }
+
+  const errors: string[] = [];
+
+  // Validação de campos do Agendamento
+  if (!Agendamento || typeof Agendamento !== 'object') {
+    errors.push("Agendamento é obrigatório e deve ser um objeto.");
+  } else {
+    const { Endereco_entrega, Observacao, Descricao, Oficina_id, Servico_id, Data_Hora }: Agendamento = Agendamento;
+
+    if (!Data_Hora) {
+      errors.push("Data_Hora é obrigatório.");
+    }
+
+    if (!Oficina_id) {
+      errors.push("Oficina_id é obrigatório.");
+    } else if (typeof +Oficina_id !== "number") {
+      errors.push("Oficina_id deve ser um number.");
+    }
+
+    if (!Servico_id) {
+      errors.push("Servico_id é obrigatório.");
+    } else if (typeof +Servico_id !== "number") {
+      errors.push("Servico_id deve ser um number.");
+    }
+
+    if (!Endereco_entrega) {
+      errors.push("Endereco_entrega é obrigatório.");
+    } else if (typeof Endereco_entrega !== "string") {
+      errors.push("Endereco_entrega deve ser uma string.");
+    }
+
+    if (Descricao && typeof Descricao !== "string") {
+      errors.push("Descricao deve ser uma string.");
+    }
+
+    if (Observacao && typeof Observacao !== "string") {
+      errors.push("Observacao deve ser uma string.");
+    }
+  }
+
+  // Validação de Serviços Adicionais
+  if (Adicionais && !Array.isArray(Adicionais)) {
+    errors.push("Adicionais deve ser um array.");
+  }
+
+  if (errors.length > 0) {
+    return res.status(422).json({ errors });
+  }
+
+  next();
+}
+
+
+export {ValidateAgendamentoCreation, ValidateAgendamentoUpdate};

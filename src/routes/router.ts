@@ -10,7 +10,7 @@ import OficinaController from "../Controllers/OficinaController";
 import MarcaVeiculoController from "../Controllers/MarcaVeiculoController";
 import AuthController from "../Controllers/AuthController";
 
-import ValidateAgendamentoCreation from "../Middlewares/AgendamentoMiddleware";
+import { ValidateAgendamentoCreation, ValidateAgendamentoUpdate} from "../Middlewares/AgendamentoMiddleware";
 import ValidateServicoVeiculoCreation from "../Middlewares/ServicoVeiculoMiddleware";
 import ValidateVeiculoCreation from "../Middlewares/VeiculoMiddleware";
 import ValidateAvaliacaoClienteCreation from "../Middlewares/AvaliacaoClienteMiddleware";
@@ -36,8 +36,8 @@ router.get("/v1/agendamentos/:id", agendamentoController.getAgendamento.bind(age
 router.get("/v1/agendamentos/resumo/:id", agendamentoController.getAgendamentoResumo.bind(agendamentoController)); // Obter o resumo de um agendamento específico pelo ID
 router.get("/v1/agendamentos/status/:cpf/:placa", agendamentoController.getAgendamentosStatus.bind(agendamentoController)); // Obter o status de agendamentos por cpf e placa
 router.post("/v1/agendamentos", ValidateAgendamentoCreation, agendamentoController.createAgendamento.bind(agendamentoController)); // Criar um novo agendamento
-router.put("/v1/agendamentos/:id", agendamentoController.updateAgendamento.bind(agendamentoController)); // Atualizar um agendamento específico pelo ID
-router.delete("/v1/agendamentos/:id", agendamentoController.deleteAgendamento.bind(agendamentoController)); // Excluir um agendamento específico pelo ID
+router.put("/v1/agendamentos/:id", authenticateToken, ValidateAgendamentoUpdate, agendamentoController.updateAgendamento.bind(agendamentoController)); // Atualizar um agendamento específico pelo ID
+router.delete("/v1/agendamentos/:id", authenticateToken, agendamentoController.deleteAgendamento.bind(agendamentoController)); // Excluir um agendamento específico pelo ID
 
 router.get("/v1/marcas", marcaVeiculoController.getMarcasVeiculos.bind(marcaVeiculoController)); // Listar todas as marcas de carro populares do Brasil
 router.get("/v1/marcas/:id/veiculo", marcaVeiculoController.getMarcaInfo.bind(marcaVeiculoController)); // Listar todas as oficinas
@@ -55,10 +55,10 @@ router.post("/v1/servico/adicional", authenticateToken, ValidateAgendamentoServi
 
 router.post("/v1/avaliacoes", ValidateAvaliacaoClienteCreation, avaliacaoClienteController.createAvaliacaoCliente.bind(avaliacaoClienteController)); // Avaliação feita pelo cliente
 
-router.get("/v1/veiculos", veiculoController.getVeiculos.bind(veiculoController)); // Listar todos os veiculos
-router.get("/v1/veiculos/:id", veiculoController.getVeiculo.bind(veiculoController)); // Obter um veiculo específico pelo ID
-router.post("/v1/veiculos", ValidateVeiculoCreation, veiculoController.createVeiculo.bind(veiculoController)); // Criar um novo veiculo
-router.put("/v1/veiculos/:id", veiculoController.updateVeiculo.bind(veiculoController)); // Atualizar um veiculo específico pelo ID
-router.delete("/v1/veiculos/:id", veiculoController.deleteVeiculo.bind(veiculoController)); // Excluir um veiculo específico pelo ID
+// router.get("/v1/veiculos", veiculoController.getVeiculos.bind(veiculoController)); // Listar todos os veiculos
+// router.get("/v1/veiculos/:id", veiculoController.getVeiculo.bind(veiculoController)); // Obter um veiculo específico pelo ID
+// router.post("/v1/veiculos", ValidateVeiculoCreation, veiculoController.createVeiculo.bind(veiculoController)); // Criar um novo veiculo
+// router.put("/v1/veiculos/:id", veiculoController.updateVeiculo.bind(veiculoController)); // Atualizar um veiculo específico pelo ID
+// router.delete("/v1/veiculos/:id", veiculoController.deleteVeiculo.bind(veiculoController)); // Excluir um veiculo específico pelo ID
 
 export default router;
