@@ -8,6 +8,7 @@ exports.up = async function(knex) {
             id INT IDENTITY(1,1) PRIMARY KEY,
             Veiculo_id INT NOT NULL,
             Foto_url NVARCHAR(255) NOT NULL,
+            Situacao VARCHAR(50) NOT NULL,
             Criado_em DATETIME2 DEFAULT GETDATE(),
             Atualizado_em DATETIME2 DEFAULT GETDATE(),
             FOREIGN KEY (Veiculo_id) REFERENCES Veiculo(id) ON DELETE CASCADE
