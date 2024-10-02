@@ -13,6 +13,8 @@ exports.up = async function(knex) {
             Descricao NVARCHAR(255) NOT NULL,
             Endereco_entrega NVARCHAR(255) NOT NULL,
             Observacao NVARCHAR(255),
+            Foi_entregue VARCHAR(3),
+            Previsao_entrega DATETIME,
             Data_Hora DATETIME,
             Criado_em DATETIME2 DEFAULT GETDATE(),
             Atualizado_em DATETIME2 DEFAULT GETDATE(),
