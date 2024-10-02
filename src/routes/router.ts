@@ -9,6 +9,7 @@ import AvaliacaoClienteController from "../Controllers/AvaliacaoClienteControlle
 import OficinaController from "../Controllers/OficinaController";
 import MarcaVeiculoController from "../Controllers/MarcaVeiculoController";
 import AuthController from "../Controllers/AuthController";
+import AgendamentoServicoAdicionalController from "../Controllers/AgendamentoServicoAdicionalController";
 
 import { ValidateAgendamentoCreation, ValidateAgendamentoUpdate} from "../Middlewares/AgendamentoMiddleware";
 import ValidateServicoVeiculoCreation from "../Middlewares/ServicoVeiculoMiddleware";
@@ -26,6 +27,7 @@ const servicoController = new ServicoController();
 const servicoAdicionalController = new ServicoAdicionalController();
 const servicoVeiculoController = new ServicoVeiculoController();
 const marcaVeiculoController = new MarcaVeiculoController();
+const agendamentoServicoAdicionalController = new AgendamentoServicoAdicionalController();
 
 const router = Router();
 
@@ -38,6 +40,8 @@ router.get("/v1/agendamentos/status/:cpf/:placa", agendamentoController.getAgend
 router.post("/v1/agendamentos", ValidateAgendamentoCreation, agendamentoController.createAgendamento.bind(agendamentoController)); // Criar um novo agendamento
 router.put("/v1/agendamentos/:id", authenticateToken, ValidateAgendamentoUpdate, agendamentoController.updateAgendamento.bind(agendamentoController)); // Atualizar um agendamento específico pelo ID
 router.delete("/v1/agendamentos/:id", authenticateToken, agendamentoController.deleteAgendamento.bind(agendamentoController)); // Excluir um agendamento específico pelo ID
+
+router.put("/v1/agendamentos/servico/adicional/:id", authenticateToken, agendamentoServicoAdicionalController.updateAgendamentoServicoAdicional.bind(agendamentoServicoAdicionalController)); // Atualiza o agendamento de um servço adicional
 
 router.get("/v1/marcas", marcaVeiculoController.getMarcasVeiculos.bind(marcaVeiculoController)); // Listar todas as marcas de carro populares do Brasil
 router.get("/v1/marcas/:id/veiculo", marcaVeiculoController.getMarcaInfo.bind(marcaVeiculoController)); // Listar todas as oficinas

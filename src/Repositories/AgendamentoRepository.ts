@@ -16,7 +16,7 @@ class AgendamentoRepository {
     Placa: string;
     Modelo: string;
     Situacao: string;
-    ServicosAdicionais: string[];
+    ServicosAdicionais: {ServicoAdicionalId: number, ServicoAdicionalAgendamentoId: number, ServicoAdicionalTipo: string, ServicoAdicionalSituacao: string}[];
   }[]> { 
     const agendamentos = await db('Agendamento')
       .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
@@ -33,7 +33,10 @@ class AgendamentoRepository {
         'Veiculo.Modelo',
         'Servico_Veiculo.Situacao',
         'Servico_Veiculo.id as ServicoId',
-        'Servico_Adicional.Tipo as ServicoAdicionalTipo'
+        'Servico_Adicional.Tipo as ServicoAdicionalTipo',
+        'Servico_Adicional.Id as ServicoAdicionalId',
+        'Agendamento_Servico_Adicional.Situacao as ServicoAdicionalSituacao',
+        'Agendamento_Servico_Adicional.Id as ServicoAdicionalAgendamentoId'
       );
   
     const agendamentosMap = new Map<number, {
@@ -44,7 +47,7 @@ class AgendamentoRepository {
       Placa: string;
       Modelo: string;
       Situacao: string;
-      ServicosAdicionais: string[];
+      ServicosAdicionais: {ServicoAdicionalId: number, ServicoAdicionalAgendamentoId: number, ServicoAdicionalTipo: string, ServicoAdicionalSituacao: string}[];
     }>();
   
     agendamentos.forEach(agendamento => {
@@ -62,7 +65,12 @@ class AgendamentoRepository {
       }
   
       if (agendamento.ServicoAdicionalTipo) {
-        agendamentosMap.get(agendamento.id)?.ServicosAdicionais.push(agendamento.ServicoAdicionalTipo);
+        agendamentosMap.get(agendamento.id)?.ServicosAdicionais.push({
+          ServicoAdicionalTipo: agendamento.ServicoAdicionalTipo, 
+          ServicoAdicionalId: agendamento.ServicoAdicionalId, 
+          ServicoAdicionalAgendamentoId: agendamento.ServicoAdicionalAgendamentoId, 
+          ServicoAdicionalSituacao: agendamento.ServicoAdicionalSituacao
+        });
       }
     });
   
