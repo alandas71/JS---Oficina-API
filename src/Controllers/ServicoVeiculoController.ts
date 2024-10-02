@@ -68,6 +68,7 @@ class ServicoVeiculoController {
       const updateUserServicoVeiculo = await this.servicoVeiculoRepository.updateServicoVeiculo(data, Number(id));
       res.status(200).json(updateUserServicoVeiculo);
     } catch (error) {
+      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }

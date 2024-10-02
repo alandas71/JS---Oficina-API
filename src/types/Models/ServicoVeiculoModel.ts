@@ -4,6 +4,7 @@ export interface Servico_Veiculo {
   Servico_id: number;
   Situacao: "pendente" | "em andamento" | "finalizado";
   Tempo_servico?: Date;
+  Arquivado?: string; // sim / nao
   Criado_em?: Date;
   Atualizado_em?: Date;
 }

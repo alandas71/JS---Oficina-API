@@ -8,6 +8,7 @@ exports.up = async function(knex) {
             id INT IDENTITY(1,1) PRIMARY KEY,
             Veiculo_id INT,
             Servico_id INT NOT NULL,
+            Arquivado VARCHAR(3),
             Situacao NVARCHAR(50) NOT NULL CHECK (Situacao IN ('pendente', 'em andamento', 'finalizado')),
             Criado_em DATETIME2 DEFAULT GETDATE(),
             Atualizado_em DATETIME2 DEFAULT GETDATE(),
