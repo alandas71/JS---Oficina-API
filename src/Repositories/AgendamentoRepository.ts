@@ -37,7 +37,7 @@ class AgendamentoRepository {
         'Servico_Adicional.Id as ServicoAdicionalId',
         'Agendamento_Servico_Adicional.Situacao as ServicoAdicionalSituacao',
         'Agendamento_Servico_Adicional.Id as ServicoAdicionalAgendamentoId'
-      );
+      ).where("Servico_Veiculo.Arquivado", "nao");
   
     const agendamentosMap = new Map<number, {
       id: number;
