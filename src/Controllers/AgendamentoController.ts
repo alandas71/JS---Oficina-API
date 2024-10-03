@@ -41,7 +41,6 @@ class AgendamentoController {
       const agendamentos: { id: number; ServicoId: number; Foto_url: string; Nome: string; Placa: string; Modelo: string; Situacao: string; }[] = await this.agendamentoRepository.getAgendamentos();
       res.status(200).json(agendamentos);
     } catch (error) {
-      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }
@@ -157,7 +156,7 @@ class AgendamentoController {
       );
 
       if (req.files && Object.keys(req.files).length > 0) {
-          const fotosArchives = req.files.Fotos || req.files['Fotos[0]'];
+          const fotosArchives = req.files.Fotos || Object.values(req.files).flat();
           const uploadedImages: any = await uploadImagens(fotosArchives);
           const images: string[] = uploadedImages.fileContents.filter((image: string, index: number) => index < 8); // Limite 8 imagens
           
