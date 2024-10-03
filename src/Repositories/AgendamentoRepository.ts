@@ -13,6 +13,7 @@ class AgendamentoRepository {
     ServicoId: number;
     Nome: string;
     Previsao_entrega: string;
+    Foto_url: string;
     Tipo: string;
     Placa: string;
     Modelo: string;
@@ -26,6 +27,7 @@ class AgendamentoRepository {
       .join('Servico', 'Servico.id', 'Servico_Veiculo.Servico_id')
       .leftJoin('Agendamento_Servico_Adicional', 'Agendamento.id', 'Agendamento_Servico_Adicional.Agendamento_id')
       .leftJoin('Servico_Adicional', 'Agendamento_Servico_Adicional.Servico_Adicional_id', 'Servico_Adicional.id')
+      .leftJoin('Veiculo_Fotos', 'Veiculo_Fotos.Veiculo_id', 'Veiculo.id')
       .select(
         'Agendamento.id',
         'Agendamento.Previsao_entrega',
@@ -33,18 +35,22 @@ class AgendamentoRepository {
         'Servico.Tipo',
         'Veiculo.Placa',
         'Veiculo.Modelo',
+        'Veiculo_Fotos.Foto_url',
         'Servico_Veiculo.Situacao',
         'Servico_Veiculo.id as ServicoId',
         'Servico_Adicional.Tipo as ServicoAdicionalTipo',
         'Servico_Adicional.Id as ServicoAdicionalId',
         'Agendamento_Servico_Adicional.Situacao as ServicoAdicionalSituacao',
         'Agendamento_Servico_Adicional.Id as ServicoAdicionalAgendamentoId'
-      ).where("Servico_Veiculo.Arquivado", "nao");
+      )
+      .where("Servico_Veiculo.Arquivado", "nao")
+      .orWhereNull('Servico_Veiculo.Arquivado');
   
     const agendamentosMap = new Map<number, {
       id: number;
       Previsao_entrega: string;
       ServicoId: number;
+      Foto_url: string;
       Nome: string;
       Tipo: string;
       Placa: string;
@@ -59,6 +65,7 @@ class AgendamentoRepository {
           id: agendamento.id,
           Previsao_entrega: agendamento.Previsao_entrega,
           ServicoId: agendamento.ServicoId,
+          Foto_url: agendamento.Foto_url ? process.env.IMAGES_URL + agendamento.Foto_url : "",
           Nome: agendamento.Nome,
           Tipo: agendamento.Tipo,
           Placa: agendamento.Placa,
