@@ -14,6 +14,8 @@ class AgendamentoRepository {
     Nome: string;
     Previsao_entrega: string;
     Foto_url: string;
+    FotoSituacao: string;
+    FotoId: number;
     Tipo: string;
     Placa: string;
     Modelo: string;
@@ -36,6 +38,8 @@ class AgendamentoRepository {
         'Veiculo.Placa',
         'Veiculo.Modelo',
         'Veiculo_Fotos.Foto_url',
+        'Veiculo_Fotos.id as FotoId',
+        'Veiculo_Fotos.Situacao as FotoSituacao',
         'Servico_Veiculo.Situacao',
         'Servico_Veiculo.id as ServicoId',
         'Servico_Adicional.Tipo as ServicoAdicionalTipo',
@@ -51,6 +55,8 @@ class AgendamentoRepository {
       Previsao_entrega: string;
       ServicoId: number;
       Foto_url: string;
+      FotoSituacao: string;
+      FotoId: number;
       Nome: string;
       Tipo: string;
       Placa: string;
@@ -65,7 +71,9 @@ class AgendamentoRepository {
           id: agendamento.id,
           Previsao_entrega: agendamento.Previsao_entrega,
           ServicoId: agendamento.ServicoId,
+          FotoId: agendamento.FotoId,
           Foto_url: agendamento.Foto_url ? process.env.IMAGES_URL + agendamento.Foto_url : "",
+          FotoSituacao: agendamento.FotoSituacao,
           Nome: agendamento.Nome,
           Tipo: agendamento.Tipo,
           Placa: agendamento.Placa,

@@ -10,6 +10,7 @@ import OficinaController from "../Controllers/OficinaController";
 import MarcaVeiculoController from "../Controllers/MarcaVeiculoController";
 import AuthController from "../Controllers/AuthController";
 import AgendamentoServicoAdicionalController from "../Controllers/AgendamentoServicoAdicionalController";
+import VeiculoFotosController from "../Controllers/VeiculoFotosController";
 
 import { ValidateAgendamentoCreation, ValidateAgendamentoUpdate} from "../Middlewares/AgendamentoMiddleware";
 import ValidateServicoVeiculoCreation from "../Middlewares/ServicoVeiculoMiddleware";
@@ -19,6 +20,7 @@ import ValidateAgendamentoServicoAdicionalCreation from "../Middlewares/Agendame
 import authenticateToken from "../Middlewares/AuthMiddleware";
 
 const authController = new AuthController();
+const veiculoFotosController = new VeiculoFotosController();
 const avaliacaoClienteController = new AvaliacaoClienteController();
 const agendamentoController = new AgendamentoController();
 const veiculoController = new VeiculoController();
@@ -59,6 +61,8 @@ router.get("/v1/servico/adicional", servicoAdicionalController.getServicosAdicio
 router.post("/v1/servico/adicional", authenticateToken, ValidateAgendamentoServicoAdicionalCreation, servicoAdicionalController.createServicoAdicional.bind(servicoAdicionalController)); // Criar um novo serviço adicional
 
 router.post("/v1/avaliacoes", ValidateAvaliacaoClienteCreation, avaliacaoClienteController.createAvaliacaoCliente.bind(avaliacaoClienteController)); // Avaliação feita pelo cliente
+
+router.put("/v1/veiculo/fotos/:id", authenticateToken, veiculoFotosController.updateVeiculoFotos.bind(veiculoFotosController)); // Atualizar o checklist de fotos
 
 // router.get("/v1/veiculos", veiculoController.getVeiculos.bind(veiculoController)); // Listar todos os veiculos
 // router.get("/v1/veiculos/:id", veiculoController.getVeiculo.bind(veiculoController)); // Obter um veiculo específico pelo ID

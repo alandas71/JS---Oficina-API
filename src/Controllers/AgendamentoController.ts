@@ -38,7 +38,7 @@ class AgendamentoController {
 
   async getAgendamentos(req: Request, res: Response): Promise<void> {
     try {
-      const agendamentos: { id: number; ServicoId: number; Foto_url: string; Nome: string; Placa: string; Modelo: string; Situacao: string; }[] = await this.agendamentoRepository.getAgendamentos();
+      const agendamentos: { id: number; ServicoId: number; FotoSituacao: string; Foto_url: string; FotoId: number; Nome: string; Placa: string; Modelo: string; Situacao: string; }[] = await this.agendamentoRepository.getAgendamentos();
       res.status(200).json(agendamentos);
     } catch (error) {
       res.status(500).json({ message: "Erro interno no servidor." });

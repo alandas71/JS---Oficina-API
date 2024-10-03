@@ -2,7 +2,7 @@ import db from "../../db/conn";
 import { Veiculo_Fotos } from "../types/Models/VeiculoFotosModel";
 
 class VeiculoFotosRepository {
-  async getVeiculoFotoss(): Promise<Veiculo_Fotos[]> {
+  async getVeiculosFotos(): Promise<Veiculo_Fotos[]> {
     return await db.table("Veiculo_Fotos").select("*");
   }
 
