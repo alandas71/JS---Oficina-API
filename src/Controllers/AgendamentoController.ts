@@ -50,7 +50,7 @@ class AgendamentoController {
       const { cpf, placa } = req.params;
       const { situacao } = req.query;
 
-      const agendamentos: { id: number; Nome: string; Placa: string; Modelo: string; Situacao: string; }[] | [] = await this.agendamentoRepository.getAgendamentosStatus(Number(cpf), placa, situacao?.toString());
+      const agendamentos: { id: number; Nome: string; Placa: string; Modelo: string; Situacao: string; Previsao_entrega: string;  }[] | [] = await this.agendamentoRepository.getAgendamentosStatus(Number(cpf), placa, situacao?.toString());
       
       if (!agendamentos) {
         res.status(404).json({ message: "Agendamentos não encontrados." });

@@ -139,7 +139,7 @@ class AgendamentoRepository {
     };
   }
   
-  async getAgendamentosStatus(cpf: number, placa: string, situacao: string): Promise<{ id: number; Nome: string; Placa: string; Modelo: string; Situacao: string; }[]> {
+  async getAgendamentosStatus(cpf: number, placa: string, situacao: string): Promise<{ id: number; Nome: string; Placa: string; Modelo: string; Situacao: string; Previsao_entrega: string; }[]> {
       const query = db('Agendamento')
           .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
           .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
@@ -150,6 +150,7 @@ class AgendamentoRepository {
               'Veiculo.Placa',
               'Veiculo.Modelo',
               'Agendamento.id',
+              'Agendamento.Previsao_entrega',
               'Agendamento.Servico_Situacao'
           )
           .where('Cliente.CPF', cpf)
@@ -171,6 +172,7 @@ class AgendamentoRepository {
           Placa: agendamento.Placa,
           Modelo: agendamento.Modelo,
           Situacao: agendamento.Situacao,
+          Previsao_entrega: agendamento.Previsao_entrega,
           Servico_Situacao: agendamento.Servico_Situacao
       }));
   }
