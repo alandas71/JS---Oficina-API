@@ -58,6 +58,7 @@ router.put("/v1/servicos/:id", authenticateToken, servicoVeiculoController.updat
 router.get("/v1/servico", servicoController.getServicos.bind(servicoController)); // Listar todos os serviços
 
 router.get("/v1/servico/adicional", servicoAdicionalController.getServicosAdicionais.bind(servicoAdicionalController)); // Listar todos os serviços adicionais
+router.get("/v1/servico/adicional/filtro/:id", servicoAdicionalController.getServicoAdicionalFiltroCliente.bind(servicoAdicionalController)); // Listar todos os serviços adicionais
 router.post("/v1/servico/adicional", authenticateToken, ValidateAgendamentoServicoAdicionalCreation, servicoAdicionalController.createServicoAdicional.bind(servicoAdicionalController)); // Criar um novo serviço adicional
 
 router.post("/v1/avaliacoes", ValidateAvaliacaoClienteCreation, avaliacaoClienteController.createAvaliacaoCliente.bind(avaliacaoClienteController)); // Avaliação feita pelo cliente

@@ -20,8 +20,14 @@ class AgendamentoRepository {
     Placa: string;
     Modelo: string;
     Situacao: string;
-    ServicosAdicionais: {ServicoAdicionalId: number, ServicoAdicionalAgendamentoId: number, ServicoAdicionalTipo: string, ServicoAdicionalSituacao: string}[];
-  }[]> { 
+    ServicosAdicionais: {
+      ServicoAdicionalId: number;
+      ServicoAdicionalAgendamentoId: number;
+      ServicoAdicionalTipo: string;
+      ServicoAdicionalSituacao: string;
+    }[];
+    NaoEscolhidos: Servico_Adicional[];
+  }[]> {
     const agendamentos = await db('Agendamento')
       .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
       .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
@@ -43,9 +49,9 @@ class AgendamentoRepository {
         'Servico_Veiculo.Situacao',
         'Servico_Veiculo.id as ServicoId',
         'Servico_Adicional.Tipo as ServicoAdicionalTipo',
-        'Servico_Adicional.Id as ServicoAdicionalId',
+        'Servico_Adicional.id as ServicoAdicionalId',
         'Agendamento_Servico_Adicional.Situacao as ServicoAdicionalSituacao',
-        'Agendamento_Servico_Adicional.Id as ServicoAdicionalAgendamentoId'
+        'Agendamento_Servico_Adicional.id as ServicoAdicionalAgendamentoId'
       )
       .where("Servico_Veiculo.Arquivado", "nao")
       .orWhereNull('Servico_Veiculo.Arquivado');
@@ -62,10 +68,16 @@ class AgendamentoRepository {
       Placa: string;
       Modelo: string;
       Situacao: string;
-      ServicosAdicionais: {ServicoAdicionalId: number, ServicoAdicionalAgendamentoId: number, ServicoAdicionalTipo: string, ServicoAdicionalSituacao: string}[];
+      ServicosAdicionais: {
+        ServicoAdicionalId: number;
+        ServicoAdicionalAgendamentoId: number;
+        ServicoAdicionalTipo: string;
+        ServicoAdicionalSituacao: string;
+      }[];
+      NaoEscolhidos: Servico_Adicional[];
     }>();
   
-    agendamentos.forEach(agendamento => {
+    for (const agendamento of agendamentos) {
       if (!agendamentosMap.has(agendamento.id)) {
         agendamentosMap.set(agendamento.id, {
           id: agendamento.id,
@@ -79,22 +91,37 @@ class AgendamentoRepository {
           Placa: agendamento.Placa,
           Modelo: agendamento.Modelo,
           Situacao: agendamento.Situacao,
-          ServicosAdicionais: []
+          ServicosAdicionais: [],
+          NaoEscolhidos: []
         });
       }
   
       if (agendamento.ServicoAdicionalTipo) {
         agendamentosMap.get(agendamento.id)?.ServicosAdicionais.push({
-          ServicoAdicionalTipo: agendamento.ServicoAdicionalTipo, 
-          ServicoAdicionalId: agendamento.ServicoAdicionalId, 
-          ServicoAdicionalAgendamentoId: agendamento.ServicoAdicionalAgendamentoId, 
+          ServicoAdicionalTipo: agendamento.ServicoAdicionalTipo,
+          ServicoAdicionalId: agendamento.ServicoAdicionalId,
+          ServicoAdicionalAgendamentoId: agendamento.ServicoAdicionalAgendamentoId,
           ServicoAdicionalSituacao: agendamento.ServicoAdicionalSituacao
         });
       }
-    });
+    }
+  
+    for (const [agendamentoId, agendamentoData] of agendamentosMap) {
+      const servicosEscolhidos = agendamentoData.ServicosAdicionais.map(sa => sa.ServicoAdicionalId);
+      const servicosNaoEscolhidos = await db.table("Servico_Adicional")
+        .select("Servico_Adicional.*")
+        .leftJoin("Agendamento_Servico_Adicional", "Servico_Adicional.id", "Agendamento_Servico_Adicional.Servico_Adicional_id")
+        .where("Agendamento_Servico_Adicional.Agendamento_id", agendamentoId)
+        .orWhereNull("Agendamento_Servico_Adicional.Agendamento_id")
+        .whereNotIn("Servico_Adicional.id", servicosEscolhidos)
+        .orderBy("Servico_Adicional.id");
+  
+      agendamentoData.NaoEscolhidos = servicosNaoEscolhidos;
+    }
   
     return Array.from(agendamentosMap.values());
   }
+  
 
   async getClienteAgendamentos(cpf: number, placa: string): Promise<Agendamento[]> {
     return await db.table("Agendamento").select("*").where({CPF: cpf, placa: placa});
