@@ -9,7 +9,7 @@ export interface Agendamento {
   Endereco_entrega: string;
   Observacao: string;
   Data_Hora: Date | string;
-  Previsao_entrega?: Date | string;
+  Previsao_entrega?: string;
   Foi_entregue?: string; // sim / nao
   Criado_em?: Date;
   Atualizado_em?: Date;

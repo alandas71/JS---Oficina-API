@@ -184,7 +184,6 @@ class AgendamentoController {
       
       res.status(201).json(responseData);
     } catch (error) {
-      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }
@@ -200,7 +199,24 @@ class AgendamentoController {
         return;
       }
       
-      res.sendStatus(204);
+      res.sendStatus(200);
+    } catch (error) {
+      res.status(500).json({ message: "Erro interno no servidor." });
+    }
+  }
+
+  async updatePrazoAgendamento(req: Request, res: Response): Promise<void> {
+    try {
+      const id: number = Number(req.params.id);
+      const data = req.body;
+      const updatedRow: boolean = await this.agendamentoRepository.updatePrazoAgendamento(data.Previsao_entrega, id);
+
+      if (!updatedRow) {
+        res.status(404).json({ message: "Agendamento não encontrado." });
+        return;
+      }
+      
+      res.sendStatus(200);
     } catch (error) {
       res.status(500).json({ message: "Erro interno no servidor." });
     }

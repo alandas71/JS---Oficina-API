@@ -55,7 +55,7 @@ class VeiculoController {
         return;
       }
       
-      res.sendStatus(204);
+      res.sendStatus(200);
     } catch (error) {
       res.status(500).json({ message: "Erro interno no servidor." });
     }

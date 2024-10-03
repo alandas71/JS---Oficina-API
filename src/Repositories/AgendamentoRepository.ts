@@ -256,6 +256,11 @@ class AgendamentoRepository {
     const updatedRows = await db.table("Agendamento").where("id", id).update(data);
     return !!updatedRows;
   }  
+  
+  async updatePrazoAgendamento(previsao: Date | string, id: number): Promise<boolean> {
+    const updatedRows = await db.table("Agendamento").where("id", id).update({Previsao_entrega: previsao});
+    return !!updatedRows;
+  }  
 
   async deleteAgendamento(id: number): Promise<boolean> {
     const deletedRows = await db.table("Agendamento").where("id", id).del();

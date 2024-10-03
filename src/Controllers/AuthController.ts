@@ -20,7 +20,6 @@ class AuthController {
             res.status(401).json({ message: "Credenciais inválidas" });
             }
         } catch (error) {
-            console.log(error)
             res.status(500).json({ message: "Erro interno no servidor." });
         }
     }

@@ -39,6 +39,7 @@ router.get("/v1/agendamentos/resumo/:id", agendamentoController.getAgendamentoRe
 router.get("/v1/agendamentos/status/:cpf/:placa", agendamentoController.getAgendamentosStatus.bind(agendamentoController)); // Obter o status de agendamentos por cpf e placa
 router.post("/v1/agendamentos", ValidateAgendamentoCreation, agendamentoController.createAgendamento.bind(agendamentoController)); // Criar um novo agendamento
 router.put("/v1/agendamentos/:id", authenticateToken, ValidateAgendamentoUpdate, agendamentoController.updateAgendamento.bind(agendamentoController)); // Atualizar um agendamento específico pelo ID
+router.put("/v1/agendamentos/prazo/:id", authenticateToken, agendamentoController.updatePrazoAgendamento.bind(agendamentoController)); // Atualizar um agendamento específico pelo ID
 router.delete("/v1/agendamentos/:id", authenticateToken, agendamentoController.deleteAgendamento.bind(agendamentoController)); // Excluir um agendamento específico pelo ID
 
 router.put("/v1/agendamentos/servico/adicional/:id", authenticateToken, agendamentoServicoAdicionalController.updateAgendamentoServicoAdicional.bind(agendamentoServicoAdicionalController)); // Atualiza o agendamento de um servço adicional
