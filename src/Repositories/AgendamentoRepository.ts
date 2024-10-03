@@ -12,6 +12,7 @@ class AgendamentoRepository {
     id: number;
     ServicoId: number;
     Nome: string;
+    Previsao_entrega: string;
     Tipo: string;
     Placa: string;
     Modelo: string;
@@ -27,6 +28,7 @@ class AgendamentoRepository {
       .leftJoin('Servico_Adicional', 'Agendamento_Servico_Adicional.Servico_Adicional_id', 'Servico_Adicional.id')
       .select(
         'Agendamento.id',
+        'Agendamento.Previsao_entrega',
         'Cliente.Nome',
         'Servico.Tipo',
         'Veiculo.Placa',
@@ -41,6 +43,7 @@ class AgendamentoRepository {
   
     const agendamentosMap = new Map<number, {
       id: number;
+      Previsao_entrega: string;
       ServicoId: number;
       Nome: string;
       Tipo: string;
@@ -54,6 +57,7 @@ class AgendamentoRepository {
       if (!agendamentosMap.has(agendamento.id)) {
         agendamentosMap.set(agendamento.id, {
           id: agendamento.id,
+          Previsao_entrega: agendamento.Previsao_entrega,
           ServicoId: agendamento.ServicoId,
           Nome: agendamento.Nome,
           Tipo: agendamento.Tipo,
