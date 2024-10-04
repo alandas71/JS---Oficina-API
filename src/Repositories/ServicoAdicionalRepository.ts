@@ -21,7 +21,7 @@ class ServicoAdicionalRepository {
       .select("Servico_Adicional.*")
       .leftJoin("Agendamento_Servico_Adicional", "Servico_Adicional.id", "Agendamento_Servico_Adicional.Servico_Adicional_id")
       .where("Agendamento_Servico_Adicional.Agendamento_id", id)
-      .orWhereNull("Agendamento_Servico_Adicional.Agendamento_id") // Inclui serviços que nunca foram escolhidos
+      .orWhereNull("Agendamento_Servico_Adicional.Agendamento_id")
       .orderBy("Servico_Adicional.id");
   
     return { escolhidos, naoEscolhidos };

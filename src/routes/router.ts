@@ -44,6 +44,7 @@ router.put("/v1/agendamentos/:id", authenticateToken, ValidateAgendamentoUpdate,
 router.put("/v1/agendamentos/prazo/:id", authenticateToken, agendamentoController.updatePrazoAgendamento.bind(agendamentoController)); // Atualizar um agendamento específico pelo ID
 router.delete("/v1/agendamentos/:id", authenticateToken, agendamentoController.deleteAgendamento.bind(agendamentoController)); // Excluir um agendamento específico pelo ID
 
+router.post("/v1/agendamentos/servico/adicional", authenticateToken, agendamentoServicoAdicionalController.createAgendamentoServicoAdicional.bind(agendamentoServicoAdicionalController)); // Cria um novo agendamento de servço adicional
 router.put("/v1/agendamentos/servico/adicional/:id", authenticateToken, agendamentoServicoAdicionalController.updateAgendamentoServicoAdicional.bind(agendamentoServicoAdicionalController)); // Atualiza o agendamento de um servço adicional
 
 router.get("/v1/marcas", marcaVeiculoController.getMarcasVeiculos.bind(marcaVeiculoController)); // Listar todas as marcas de carro populares do Brasil
@@ -64,11 +65,5 @@ router.post("/v1/servico/adicional", authenticateToken, ValidateAgendamentoServi
 router.post("/v1/avaliacoes", ValidateAvaliacaoClienteCreation, avaliacaoClienteController.createAvaliacaoCliente.bind(avaliacaoClienteController)); // Avaliação feita pelo cliente
 
 router.put("/v1/veiculo/fotos/:id", authenticateToken, veiculoFotosController.updateVeiculoFotos.bind(veiculoFotosController)); // Atualizar o checklist de fotos
-
-// router.get("/v1/veiculos", veiculoController.getVeiculos.bind(veiculoController)); // Listar todos os veiculos
-// router.get("/v1/veiculos/:id", veiculoController.getVeiculo.bind(veiculoController)); // Obter um veiculo específico pelo ID
-// router.post("/v1/veiculos", ValidateVeiculoCreation, veiculoController.createVeiculo.bind(veiculoController)); // Criar um novo veiculo
-// router.put("/v1/veiculos/:id", veiculoController.updateVeiculo.bind(veiculoController)); // Atualizar um veiculo específico pelo ID
-// router.delete("/v1/veiculos/:id", veiculoController.deleteVeiculo.bind(veiculoController)); // Excluir um veiculo específico pelo ID
 
 export default router;
