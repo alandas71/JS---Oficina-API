@@ -26,7 +26,7 @@ class AgendamentoRepository {
       ServicoAdicionalTipo: string;
       ServicoAdicionalSituacao: string;
     }[];
-    NaoEscolhidos: Servico_Adicional[];
+    todosServicosAdicionais: Servico_Adicional[];
   }[]> {
     const agendamentos = await db('Agendamento')
       .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
@@ -74,7 +74,7 @@ class AgendamentoRepository {
         ServicoAdicionalTipo: string;
         ServicoAdicionalSituacao: string;
       }[];
-      NaoEscolhidos: Servico_Adicional[];
+      todosServicosAdicionais: Servico_Adicional[];
     }>();
   
     for (const agendamento of agendamentos) {
@@ -92,7 +92,7 @@ class AgendamentoRepository {
           Modelo: agendamento.Modelo,
           Situacao: agendamento.Situacao,
           ServicosAdicionais: [],
-          NaoEscolhidos: []
+          todosServicosAdicionais: []
         });
       }
   
@@ -107,16 +107,11 @@ class AgendamentoRepository {
     }
   
     for (const [agendamentoId, agendamentoData] of agendamentosMap) {
-      const servicosEscolhidos = agendamentoData.ServicosAdicionais.map(sa => sa.ServicoAdicionalId);
-      const servicosNaoEscolhidos = await db.table("Servico_Adicional")
+      const todosServicos = await db.table("Servico_Adicional")
         .select("Servico_Adicional.*")
-        .leftJoin("Agendamento_Servico_Adicional", "Servico_Adicional.id", "Agendamento_Servico_Adicional.Servico_Adicional_id")
-        .where("Agendamento_Servico_Adicional.Agendamento_id", agendamentoId)
-        .orWhereNull("Agendamento_Servico_Adicional.Agendamento_id")
-        .whereNotIn("Servico_Adicional.id", servicosEscolhidos)
         .orderBy("Servico_Adicional.id");
   
-      agendamentoData.NaoEscolhidos = servicosNaoEscolhidos;
+      agendamentoData.todosServicosAdicionais = todosServicos;
     }
   
     return Array.from(agendamentosMap.values());

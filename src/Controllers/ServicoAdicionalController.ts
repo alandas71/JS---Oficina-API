@@ -37,7 +37,7 @@ class ServicoAdicionalController {
   async getServicoAdicionalFiltroCliente(req: Request, res: Response): Promise<void> {
     try {
       const id: number = Number(req.params.id);
-      const servicoAdicional: { escolhidos: Servico_Adicional[]; naoEscolhidos: Servico_Adicional[] } | undefined = await this.servicoAdicionalRepository.getServicoAdicionalFiltroCliente(id);
+      const servicoAdicional: { escolhidos: Servico_Adicional[]; todosServicosAdicionais: Servico_Adicional[] } | undefined = await this.servicoAdicionalRepository.getServicoAdicionalFiltroCliente(id);
       
       if (!servicoAdicional) {
         res.status(404).json({ message: "ServicoAdicional não encontrado." });
