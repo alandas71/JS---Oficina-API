@@ -6,7 +6,7 @@ class AdministracaoRepository {
     return await db.table("Administracao").select("*").where({Usuario: usuario, Senha: senha}).first();
   }
 
-  async getAdministracaos(): Promise<Administracao[]> {
+  async getAdministracoes(): Promise<Administracao[]> {
     return await db.table("Administracao").select("*");
   }
 

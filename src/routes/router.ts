@@ -11,6 +11,7 @@ import MarcaVeiculoController from "../Controllers/MarcaVeiculoController";
 import AuthController from "../Controllers/AuthController";
 import AgendamentoServicoAdicionalController from "../Controllers/AgendamentoServicoAdicionalController";
 import VeiculoFotosController from "../Controllers/VeiculoFotosController";
+import AdministracaoController from "../Controllers/AdministracaoController";
 
 import { ValidateAgendamentoCreation, ValidateAgendamentoUpdate} from "../Middlewares/AgendamentoMiddleware";
 import ValidateServicoVeiculoCreation from "../Middlewares/ServicoVeiculoMiddleware";
@@ -30,6 +31,7 @@ const servicoAdicionalController = new ServicoAdicionalController();
 const servicoVeiculoController = new ServicoVeiculoController();
 const marcaVeiculoController = new MarcaVeiculoController();
 const agendamentoServicoAdicionalController = new AgendamentoServicoAdicionalController();
+const administracaoController = new AdministracaoController();
 
 const router = Router();
 
@@ -52,6 +54,15 @@ router.get("/v1/marcas/:id/veiculo", marcaVeiculoController.getMarcaInfo.bind(ma
 
 router.get("/v1/oficina", oficinaController.getOficinas.bind(oficinaController)); // Listar todas as oficinas
 router.get("/v1/oficina/:id", oficinaController.getOficina.bind(oficinaController)); // Listar uma oficina pelo ID
+router.post("/v1/oficina", authenticateToken, oficinaController.createOficina.bind(oficinaController)); // Criar oficina
+router.put("/v1/oficina/:id", authenticateToken, oficinaController.updateOficina.bind(oficinaController)); // Atualiar uma oficina pelo ID
+router.delete("/v1/oficina/:id", authenticateToken, oficinaController.deleteOficina.bind(oficinaController)); // Excluir uma oficina pelo ID
+
+router.get("/v1/administracao", authenticateToken, administracaoController.getAdministracoes.bind(administracaoController)); // Listar todas as administracoes
+router.get("/v1/administracao/:id", authenticateToken, administracaoController.getAdministracao.bind(administracaoController)); // Listar uma administracao pelo ID
+router.post("/v1/administracao", authenticateToken, administracaoController.createAdministracao.bind(administracaoController)); // Criar administracao
+router.put("/v1/administracao/:id", authenticateToken, administracaoController.updateAdministracao.bind(administracaoController)); // Atualiar uma administracao pelo ID
+router.delete("/v1/administracao/:id", authenticateToken, administracaoController.deleteAdministracao.bind(administracaoController)); // Excluir uma administracao pelo ID
 
 router.post("/v1/servicos", ValidateServicoVeiculoCreation, servicoVeiculoController.createServicoVeiculo.bind(servicoVeiculoController)); // Criar um novo serviço veicular
 router.put("/v1/servicos/:id", authenticateToken, servicoVeiculoController.updateUserServicoVeiculo.bind(servicoVeiculoController)); // Atualiza um serviço veicular pela situação
@@ -62,6 +73,7 @@ router.get("/v1/servico/adicional", servicoAdicionalController.getServicosAdicio
 router.get("/v1/servico/adicional/filtro/:id", servicoAdicionalController.getServicoAdicionalFiltroCliente.bind(servicoAdicionalController)); // Listar todos os serviços adicionais
 router.post("/v1/servico/adicional", authenticateToken, ValidateAgendamentoServicoAdicionalCreation, servicoAdicionalController.createServicoAdicional.bind(servicoAdicionalController)); // Criar um novo serviço adicional
 
+router.get("/v1/avaliacoes", authenticateToken, avaliacaoClienteController.getAvaliacaoCliente.bind(avaliacaoClienteController)); // Obetém todas as avaliações feitas
 router.post("/v1/avaliacoes", ValidateAvaliacaoClienteCreation, avaliacaoClienteController.createAvaliacaoCliente.bind(avaliacaoClienteController)); // Avaliação feita pelo cliente
 
 router.put("/v1/veiculo/fotos/:id", authenticateToken, veiculoFotosController.updateVeiculoFotos.bind(veiculoFotosController)); // Atualizar o checklist de fotos
