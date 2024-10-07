@@ -40,7 +40,6 @@ class AdministracaoController {
       const newAdministracao: Administracao = await this.administracaoRepository.createAdministracao(data);
       res.status(201).json(newAdministracao);
     } catch (error) {
-      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }

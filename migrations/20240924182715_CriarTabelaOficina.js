@@ -9,6 +9,7 @@ exports.up = async function(knex) {
             Nome NVARCHAR(255) NOT NULL,
             Email NVARCHAR(255) NOT NULL,
             Endereco NVARCHAR(255) NOT NULL,
+            CNPJ VARCHAR(255),
             Telefone BIGINT NOT NULL,
             Situacao NVARCHAR(10) NOT NULL CHECK (Situacao IN ('ativo', 'inativo')),
         )
