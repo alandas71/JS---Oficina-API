@@ -4,4 +4,5 @@ export interface Oficina {
   Endereco: string;
   Email?: string;
   Telefone?: number;
+  Situacao?: string;
 }
