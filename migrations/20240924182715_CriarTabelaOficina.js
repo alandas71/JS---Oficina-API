@@ -8,6 +8,7 @@ exports.up = async function(knex) {
             id INT IDENTITY(1,1) PRIMARY KEY,
             Nome NVARCHAR(255) NOT NULL,
             Email NVARCHAR(255) NOT NULL,
+            Endereco NVARCHAR(255) NOT NULL,
             Telefone BIGINT NOT NULL,
             Situacao NVARCHAR(10) NOT NULL CHECK (Situacao IN ('ativo', 'inativo')),
         )
