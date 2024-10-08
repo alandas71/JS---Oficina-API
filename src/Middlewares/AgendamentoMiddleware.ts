@@ -132,9 +132,9 @@ function ValidateAgendamentoCreation(req: AgendamentoCreateRequest, res: Respons
         errors.push("A cor deve ser uma string.");
       }
       
-      if (Chassi && Chassi.trim().length !== 17) {
-        errors.push("O número do chassi deve ter 17 caracteres.");
-      }
+      // if (Chassi && Chassi.trim().length !== 17) {
+      //   errors.push("O número do chassi deve ter 17 caracteres.");
+      // }
       
       if (!Quilometragem) {
         errors.push("Quilometragem é obrigatório.");

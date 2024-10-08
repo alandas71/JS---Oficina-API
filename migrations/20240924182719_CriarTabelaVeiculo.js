@@ -13,7 +13,7 @@ exports.up = async function(knex) {
             Caracteristicas NVARCHAR(255),
             Ano_Modelo INT,
             Cor NVARCHAR(50) NOT NULL,
-            Chassi NVARCHAR(50) NOT NULL,
+            Chassi NVARCHAR(50),
             Quilometragem INT NOT NULL,
             Criado_em DATETIME2 DEFAULT GETDATE(),
             Atualizado_em DATETIME2 DEFAULT GETDATE(),

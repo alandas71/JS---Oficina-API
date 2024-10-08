@@ -6,7 +6,8 @@ exports.up = async function(knex) {
     await knex.raw(`
         CREATE TABLE Oficina (
             id INT IDENTITY(1,1) PRIMARY KEY,
-            Nome NVARCHAR(255) NOT NULL
+            Nome NVARCHAR(255) NOT NULL,
+            Endereco VARCHAR(255)
         )
     `);
 };
