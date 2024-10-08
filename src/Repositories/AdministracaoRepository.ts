@@ -7,12 +7,32 @@ class AdministracaoRepository {
   }
 
   async getAdministracoes(): Promise<Administracao[]> {
-    return await db.table("Administracao").select("*");
+    return await db.table("Administracao")
+      .select(
+        "id",
+        "Usuario",
+        "Tipo",
+        "Email",
+        "Telefone",
+        db.raw(`CASE WHEN "Tipo" <> 'administrador' THEN "Senha" ELSE NULL END AS "Senha"`),
+        "Situacao"
+      );
   }
-
+  
   async getAdministracao(id: number): Promise<Administracao | undefined> {
-    return await db.table("Administracao").select("*").where("id", id).first();
-  }
+    return await db.table("Administracao")
+      .select(
+        "id",
+        "Usuario",
+        "Tipo",
+        "Email",
+        "Telefone",
+        db.raw(`CASE WHEN "Tipo" <> 'administrador' THEN "Senha" ELSE NULL END AS "Senha"`),
+        "Situacao"
+      )
+      .where("id", id)
+      .first();
+  }  
 
   async createAdministracao(data: Administracao): Promise<Administracao> {
     const result = await db.table("Administracao").insert(data).returning('*');

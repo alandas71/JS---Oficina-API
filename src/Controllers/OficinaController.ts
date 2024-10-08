@@ -40,6 +40,7 @@ class OficinaController {
       const newOficina: Oficina = await this.oficinaRepository.createOficina(data);
       res.status(201).json(newOficina);
     } catch (error) {
+      console.log(error)
       res.status(500).json({ message: "Erro interno no servidor." });
     }
   }
