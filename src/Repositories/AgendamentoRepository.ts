@@ -175,7 +175,75 @@ class AgendamentoRepository {
       }
     };
   }
-  
+
+  async getAgendamentosArquivados(paginaAtual: number, itensPorPagina: number): Promise<{ resultados: any[], total: number }> {
+    const startIndex = (paginaAtual - 1) * itensPorPagina;
+
+    const agendamentos = await db('Agendamento')
+        .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')
+        .join('Cliente', 'Veiculo.Cliente_id', 'Cliente.id')
+        .join('Servico_Veiculo', 'Veiculo.id', 'Servico_Veiculo.Veiculo_id')
+        .select(
+            'Cliente.Nome',
+            'Cliente.CPF',
+            'Cliente.Email',
+            'Cliente.Telefone',
+            'Veiculo.Placa',
+            'Veiculo.Modelo',
+            'Veiculo.Cor',
+            'Veiculo.Chassi',
+            'Veiculo.Quilometragem',
+            'Agendamento.Descricao as Descricao',
+            'Agendamento.id',
+            'Agendamento.Criado_em',
+            'Agendamento.Endereco_entrega',
+            'Agendamento.Observacao'
+        )
+        .where("Servico_Veiculo.Arquivado", "sim")
+        .limit(itensPorPagina)
+        .offset(startIndex)
+        .orderBy("Agendamento.Criado_em", "desc");
+
+    const [{ total }] = await db('Agendamento')
+        .join('Servico_Veiculo', 'Agendamento.Veiculo_id', 'Servico_Veiculo.Veiculo_id')
+        .count('* as total')
+        .where("Servico_Veiculo.Arquivado", "sim");
+
+    if (agendamentos.length === 0) {
+      return {resultados: [], total: 0};
+    }
+
+    const resultados = await Promise.all(agendamentos.map(async (agendamento) => {
+        const adicionais: Servico_Adicional[] = await db('Servico_Adicional')
+            .select('Servico_Adicional.Tipo')
+            .join('Agendamento_Servico_Adicional', 'Servico_Adicional.id', 'Agendamento_Servico_Adicional.Servico_Adicional_id')
+            .where('Agendamento_Servico_Adicional.Agendamento_id', agendamento.id);
+
+        return {
+            servico: {
+                Tipo: agendamento.Descricao,
+                Adicionais: adicionais.map((adicional: Servico_Adicional) => adicional.Tipo).join(', ')
+            },
+            resumo: {
+                Nome: agendamento.Nome,
+                CPF: agendamento.CPF,
+                Email: agendamento.Email,
+                Telefone: agendamento.Telefone,
+                Placa: agendamento.Placa,
+                Modelo: agendamento.Modelo,
+                Cor: agendamento.Cor,
+                Chassi: agendamento.Chassi,
+                Quilometragem: agendamento.Quilometragem,
+                Criado_em: agendamento.Criado_em,
+                Observacao: agendamento.Observacao,
+                Endereco_entrega: agendamento.Endereco_entrega
+            }
+        };
+    }));
+    
+    return { resultados, total: Number(total) };
+  }
+
   async getAgendamentosStatus(cpf: number, placa: string, situacao: string): Promise<{ id: number; Nome: string; Placa: string; Modelo: string; Situacao: string; Previsao_entrega: string; }[]> {
       const query = db('Agendamento')
           .join('Veiculo', 'Agendamento.Veiculo_id', 'Veiculo.id')

@@ -45,6 +45,19 @@ class AgendamentoController {
     }
   }
 
+  async getAgendamentosArquivados(req: Request, res: Response): Promise<void> {
+    const { pagina, itensPorPagina } = req.query;
+    const paginaAtual = parseInt(pagina as string, 10) || 1;
+    const itensPorPaginaAtual = parseInt(itensPorPagina as string, 10) || 10;
+    try {
+      const agendamentos: { resultados: any[], total: number } = await this.agendamentoRepository.getAgendamentosArquivados(paginaAtual, itensPorPaginaAtual);
+      res.status(200).json(agendamentos);
+    } catch (error) {
+      console.log(error)
+      res.status(500).json({ message: "Erro interno no servidor." });
+    }
+  }
+
   async getAgendamentosStatus(req: Request, res: Response): Promise<void> {
     try {
       const { cpf, placa } = req.params;

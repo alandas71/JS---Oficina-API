@@ -38,6 +38,7 @@ const router = Router();
 router.post("/v1/login", authController.Login.bind(authController));
 
 router.get("/v1/agendamentos", authenticateToken, agendamentoController.getAgendamentos.bind(agendamentoController)); // Listar todos os agendamentos
+router.get("/v1/agendamentos/arquivados", authenticateToken, agendamentoController.getAgendamentosArquivados.bind(agendamentoController)); // Listar todos os agendamentos arquivados
 router.get("/v1/agendamentos/:id", agendamentoController.getAgendamento.bind(agendamentoController)); // Obter um agendamento específico pelo ID
 router.get("/v1/agendamentos/resumo/:id", agendamentoController.getAgendamentoResumo.bind(agendamentoController)); // Obter o resumo de um agendamento específico pelo ID
 router.get("/v1/agendamentos/status/:cpf/:placa", agendamentoController.getAgendamentosStatus.bind(agendamentoController)); // Obter o status de agendamentos por cpf e placa
